@@ -1,0 +1,1861 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>提丰购物 - 您的一站式购物平台</title>
+<!-- Vant 4 CSS -->
+<link rel="stylesheet" href="https://unpkg.com/vant@4/lib/index.css">
+<style>
+/* ========== CSS Variables (Day/Night Theme) ========== */
+:root {
+  --bg-primary: #fff8f0;
+  --bg-secondary: #fffdf8;
+  --bg-card: #ffffff;
+  --bg-header: rgba(255,255,255,0.94);
+  --text-primary: #2d1f0e;
+  --text-secondary: #6b5e4a;
+  --text-muted: #9b8d7a;
+  --accent: #ff6b35;
+  --accent-light: #ff8c5a;
+  --accent-dark: #e55a2b;
+  --accent-rgb: 255,107,53;
+  --border: #f0e4d0;
+  --shadow: 0 2px 16px rgba(139,109,56,0.10);
+  --shadow-lg: 0 8px 40px rgba(139,109,56,0.14);
+  --badge: #ff4757;
+  --star: #ffa502;
+  --success: #2ed573;
+  --gradient-hero: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 30%, #ffcc80 70%, #fff8e1 100%);
+  --sun-opacity: 1;
+  --stars-opacity: 0;
+  --moon-opacity: 0;
+  --sky-gradient: linear-gradient(180deg, #ffecd2 0%, #fcb69f 30%, #ffecd2 100%);
+  --card-hover-bg: #fffaf3;
+  --input-bg: #fff9f0;
+  --overlay: rgba(255,248,240,0.85);
+  --tag-bg: #fff3e0;
+  --tag-text: #e65100;
+  --nav-bg: rgba(255,255,255,0.92);
+  --cat-hover-bg: #fff3e0;
+  --footer-bg: #faf5ed;
+}
+
+[data-theme="dark"] {
+  --bg-primary: #0a0a1a;
+  --bg-secondary: #0f0f24;
+  --bg-card: #14142e;
+  --bg-header: rgba(10,10,26,0.94);
+  --text-primary: #e8e6f0;
+  --text-secondary: #a09cc0;
+  --text-muted: #6b6790;
+  --accent: #7c6ff7;
+  --accent-light: #9b8fff;
+  --accent-dark: #5b4fd9;
+  --accent-rgb: 124,111,247;
+  --border: #1e1e3a;
+  --shadow: 0 2px 16px rgba(0,0,0,0.30);
+  --shadow-lg: 0 8px 40px rgba(0,0,0,0.40);
+  --badge: #ff6b81;
+  --star: #ffa502;
+  --success: #2ed573;
+  --gradient-hero: linear-gradient(135deg, #0a0a2e 0%, #1a1050 30%, #0d0040 70%, #0a0a2e 100%);
+  --sun-opacity: 0;
+  --stars-opacity: 1;
+  --moon-opacity: 1;
+  --sky-gradient: linear-gradient(180deg, #0a0a1a 0%, #0d0030 50%, #0a0a1a 100%);
+  --card-hover-bg: #1a1a3a;
+  --input-bg: #1a1a35;
+  --overlay: rgba(10,10,26,0.90);
+  --tag-bg: #1e1050;
+  --tag-text: #9b8fff;
+  --nav-bg: rgba(10,10,26,0.94);
+  --cat-hover-bg: #1e1050;
+  --footer-bg: #0d0d20;
+}
+
+/* ========== Reset & Base ========== */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family: -apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;
+  background:var(--bg-primary);color:var(--text-primary);min-height:100vh;
+  transition:background 0.6s,color 0.6s;overflow-x:hidden;position:relative;
+}
+a{text-decoration:none;color:inherit}
+img{max-width:100%}
+
+/* ========== Sky Background (outside Vue) ========== */
+.sky-bg{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;background:var(--sky-gradient);transition:background 0.8s}
+.sun{position:fixed;top:-60px;right:-60px;width:280px;height:280px;z-index:0;pointer-events:none;opacity:var(--sun-opacity);transition:opacity 0.8s}
+.sun-core{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:100px;height:100px;background:radial-gradient(circle,#fff7c2 0%,#ffdb58 30%,#ffb347 70%,transparent 100%);border-radius:50%;box-shadow:0 0 80px #ffb347,0 0 160px #ffa500,0 0 240px rgba(255,165,0,0.4);animation:sunPulse 3s ease-in-out infinite}
+.sun-ray{position:absolute;top:50%;left:50%;width:4px;height:80px;background:linear-gradient(to bottom,rgba(255,200,50,0.7),transparent);border-radius:2px;transform-origin:bottom center;animation:rayRotate 20s linear infinite}
+.sun-ray:nth-child(2){animation-duration:25s;height:65px;animation-delay:-2s}
+.sun-ray:nth-child(3){animation-duration:18s;height:95px;animation-delay:-5s}
+.sun-ray:nth-child(4){animation-duration:22s;height:55px;animation-delay:-8s}
+.sun-ray:nth-child(5){animation-duration:16s;height:75px;animation-delay:-11s}
+.sun-ray:nth-child(6){animation-duration:28s;height:90px;animation-delay:-3s}
+.sun-ray:nth-child(7){animation-duration:19s;height:60px;animation-delay:-7s}
+.sun-ray:nth-child(8){animation-duration:23s;height:85px;animation-delay:-13s}
+.sun-ray:nth-child(9){animation-duration:14s;height:70px;animation-delay:-4s}
+.sun-ray:nth-child(10){animation-duration:26s;height:50px;animation-delay:-9s}
+.day-particle{position:fixed;z-index:0;pointer-events:none;background:radial-gradient(circle,rgba(255,200,100,0.7),transparent);border-radius:50%;animation:floatUp 6s ease-in infinite;opacity:var(--sun-opacity);transition:opacity 0.8s}
+.moon-container{position:fixed;top:40px;right:80px;z-index:0;pointer-events:none;opacity:var(--moon-opacity);transition:opacity 0.8s}
+.moon{width:60px;height:60px;background:radial-gradient(circle at 45% 45%,#f5f3ce 0%,#e8e4b0 40%,#d4cf90 100%);border-radius:50%;box-shadow:0 0 40px rgba(200,200,255,0.4),0 0 80px rgba(180,180,240,0.25);position:relative}
+.moon::after{content:'';position:absolute;top:12px;left:30px;width:18px;height:18px;background:radial-gradient(circle,rgba(200,200,220,0.5),transparent 70%);border-radius:50%}
+.stars-container{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;opacity:var(--stars-opacity);transition:opacity 0.8s}
+.star{position:absolute;border-radius:50%;animation:twinkle var(--dur) ease-in-out infinite;animation-delay:var(--delay)}
+.shooting-star{position:fixed;z-index:0;pointer-events:none;opacity:var(--stars-opacity);transition:opacity 0.8s;width:2px;height:80px;background:linear-gradient(to bottom,rgba(255,255,255,0.9),transparent);border-radius:1px;animation:shoot 4s ease-in infinite}
+
+/* ========== Keyframes ========== */
+@keyframes sunPulse{0%,100%{box-shadow:0 0 80px #ffb347,0 0 160px #ffa500,0 0 240px rgba(255,165,0,0.4)}50%{box-shadow:0 0 100px #ffb347,0 0 200px #ffa500,0 0 300px rgba(255,165,0,0.55)}}
+@keyframes rayRotate{from{transform:translate(-50%,-100%) rotate(0deg)}to{transform:translate(-50%,-100%) rotate(360deg)}}
+@keyframes floatUp{0%{transform:translateY(100vh) scale(0);opacity:0}10%{opacity:1}90%{opacity:1}100%{transform:translateY(-10vh) scale(1);opacity:0}}
+@keyframes twinkle{0%,100%{opacity:0.3;transform:scale(1)}50%{opacity:1;transform:scale(1.5)}}
+@keyframes shoot{0%{transform:translate(0,0) rotate(-35deg);opacity:0}5%{opacity:1}15%{transform:translate(-400px,250px) rotate(-35deg);opacity:0}100%{opacity:0;transform:translate(-400px,250px) rotate(-35deg)}}
+@keyframes fadeInUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes badgePop{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+
+/* ========== App Layout ========== */
+#app{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column}
+
+/* ========== Header ========== */
+.app-header{background:var(--bg-header);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;transition:background 0.6s,border-color 0.6s}
+.header-inner{max-width:1320px;margin:0 auto;padding:12px 20px;display:flex;align-items:center;gap:20px}
+.header-logo{font-size:26px;font-weight:900;background:linear-gradient(135deg,var(--accent),var(--accent-dark));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;cursor:pointer;white-space:nowrap;letter-spacing:-0.5px;display:flex;align-items:center;gap:6px;user-select:none}
+.header-logo-icon{width:36px;height:36px;background:linear-gradient(135deg,var(--accent),var(--accent-dark));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;color:#fff;-webkit-text-fill-color:#fff}
+.header-search{flex:1;max-width:520px;display:flex;border:2px solid var(--accent);border-radius:24px;overflow:hidden;transition:box-shadow 0.3s}
+.header-search:focus-within{box-shadow:0 0 0 4px rgba(var(--accent-rgb),0.15)}
+.header-search input{flex:1;border:none;outline:none;padding:11px 18px;font-size:14px;background:var(--input-bg);color:var(--text-primary);transition:background 0.6s,color 0.6s}
+.header-search button{border:none;background:var(--accent);color:#fff;padding:11px 22px;cursor:pointer;font-size:14px;font-weight:600;transition:background 0.3s;white-space:nowrap}
+.header-search button:hover{background:var(--accent-dark)}
+.header-actions{display:flex;align-items:center;gap:14px;flex-shrink:0}
+.header-btn{background:none;border:none;cursor:pointer;font-size:22px;color:var(--text-secondary);position:relative;padding:6px;transition:color 0.3s,transform 0.2s;line-height:1}
+.header-btn:hover{color:var(--accent);transform:scale(1.08)}
+.cart-badge{position:absolute;top:0;right:0;background:var(--badge);color:#fff;font-size:11px;min-width:18px;height:18px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-weight:700;padding:0 4px;line-height:1}
+.theme-toggle{width:52px;height:28px;background:var(--border);border-radius:14px;cursor:pointer;position:relative;transition:background 0.4s;border:none;flex-shrink:0}
+.theme-toggle::after{content:'';position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,0.2);transition:transform 0.4s,background 0.4s}
+[data-theme="dark"] .theme-toggle{background:#3a3060}
+[data-theme="dark"] .theme-toggle::after{transform:translateX(24px);background:#7c6ff7}
+.theme-toggle-inner{position:absolute;top:50%;transform:translateY(-50%);font-size:13px;z-index:1;pointer-events:none;transition:opacity 0.3s}
+.theme-toggle-inner.sun{left:7px;opacity:1}
+.theme-toggle-inner.moon{right:7px;opacity:0.3}
+[data-theme="dark"] .theme-toggle-inner.sun{opacity:0.3}
+[data-theme="dark"] .theme-toggle-inner.moon{opacity:1}
+
+/* ========== Nav ========== */
+.app-nav{background:var(--nav-bg);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border);position:sticky;top:63px;z-index:99;transition:background 0.6s}
+.nav-inner{max-width:1320px;margin:0 auto;padding:0 20px;display:flex;gap:0;overflow-x:auto;scrollbar-width:none}
+.nav-inner::-webkit-scrollbar{display:none}
+.nav-link{padding:13px 20px;cursor:pointer;font-size:14px;font-weight:500;color:var(--text-secondary);white-space:nowrap;border-bottom:2px solid transparent;transition:all 0.25s;display:block;text-decoration:none;background:none;border-top:none;border-left:none;border-right:none}
+.nav-link:hover{color:var(--accent);border-bottom-color:var(--accent);background:var(--cat-hover-bg)}
+.nav-link.router-link-exact-active,.nav-link.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:600}
+
+/* ========== Main Content ========== */
+.main-content{flex:1;max-width:1320px;width:100%;margin:0 auto;padding:20px;animation:fadeInUp 0.4s ease}
+
+/* ========== Page Common Styles ========== */
+.page-title{font-size:24px;font-weight:800;margin-bottom:20px;display:flex;align-items:center;gap:10px}
+.page-subtitle{font-size:15px;color:var(--text-secondary);margin-bottom:24px;line-height:1.6}
+
+/* ========== Carousel / Swipe ========== */
+.carousel-wrapper{border-radius:16px;overflow:hidden;margin-bottom:28px;box-shadow:var(--shadow-lg);position:relative}
+.carousel-wrapper .van-swipe-item{height:340px;display:flex;align-items:center;justify-content:center;position:relative}
+.carousel-slide{width:100%;height:100%;display:flex;align-items:center;justify-content:space-between;padding:40px 60px;position:relative;overflow:hidden}
+.carousel-slide.slide1{background:linear-gradient(135deg,#fff3e0 0%,#ffe0b2 50%,#ffcc80 100%)}
+.carousel-slide.slide2{background:linear-gradient(135deg,#e8f5e9 0%,#c8e6c9 50%,#a5d6a7 100%)}
+.carousel-slide.slide3{background:linear-gradient(135deg,#e3f2fd 0%,#bbdefb 50%,#90caf9 100%)}
+.carousel-slide.slide4{background:linear-gradient(135deg,#fce4ec 0%,#f8bbd0 50%,#f48fb1 100%)}
+[data-theme="dark"] .carousel-slide.slide1{background:linear-gradient(135deg,#1a1050,#2d1060,#1a1050)}
+[data-theme="dark"] .carousel-slide.slide2{background:linear-gradient(135deg,#0d2818,#0a3d1a,#0d2818)}
+[data-theme="dark"] .carousel-slide.slide3{background:linear-gradient(135deg,#0a1630,#0d2250,#0a1630)}
+[data-theme="dark"] .carousel-slide.slide4{background:linear-gradient(135deg,#1a0d1a,#2d1030,#1a0d1a)}
+.carousel-text h3{font-size:36px;font-weight:900;margin-bottom:10px;line-height:1.2}
+.carousel-text p{font-size:16px;opacity:0.8;margin-bottom:18px;line-height:1.6}
+.carousel-text .carousel-btn{display:inline-block;padding:10px 28px;background:var(--accent);color:#fff;border:none;border-radius:22px;font-size:15px;font-weight:600;cursor:pointer;transition:all 0.3s}
+.carousel-text .carousel-btn:hover{background:var(--accent-dark);transform:translateY(-2px);box-shadow:0 6px 20px rgba(var(--accent-rgb),0.35)}
+.carousel-img{width:200px;height:200px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+
+/* Carousel Arrows */
+.carousel-arrow{position:absolute;top:50%;transform:translateY(-50%);z-index:10;width:44px;height:44px;border-radius:50%;border:none;background:rgba(255,255,255,0.85);color:#333;font-size:28px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.25s;box-shadow:0 2px 10px rgba(0,0,0,0.12);line-height:1;padding:0;font-weight:300}
+.carousel-arrow:hover{background:#fff;box-shadow:0 4px 16px rgba(0,0,0,0.2);transform:translateY(-50%) scale(1.08)}
+.carousel-arrow-left{left:12px}
+.carousel-arrow-right{right:12px}
+[data-theme="dark"] .carousel-arrow{background:rgba(30,30,60,0.9);color:#ccc}
+[data-theme="dark"] .carousel-arrow:hover{background:rgba(40,40,80,0.95);color:#fff}
+
+/* ========== Section ========== */
+.section{margin-bottom:28px}
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.section-title{font-size:22px;font-weight:800;display:flex;align-items:center;gap:8px}
+.section-more{font-size:13px;color:var(--text-muted);cursor:pointer;transition:color 0.2s;text-decoration:none}
+.section-more:hover{color:var(--accent)}
+
+/* ========== Product Grid ========== */
+.product-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(215px,1fr));gap:16px}
+.product-card{background:var(--bg-card);border-radius:14px;overflow:hidden;cursor:pointer;border:1px solid var(--border);transition:all 0.3s;position:relative}
+.product-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg);border-color:var(--accent-light);background:var(--card-hover-bg)}
+.product-card-img{width:100%;height:200px;display:flex;align-items:center;justify-content:center;background:var(--bg-secondary);position:relative;overflow:hidden;transition:background 0.6s}
+.product-card-img svg{transition:transform 0.4s}
+.product-card:hover .product-card-img svg{transform:scale(1.06)}
+.product-tag{position:absolute;top:10px;left:10px;padding:3px 10px;border-radius:10px;font-size:11px;font-weight:700;color:#fff}
+.product-tag.hot{background:var(--badge)}
+.product-tag.new{background:var(--accent)}
+.product-card-info{padding:14px}
+.product-card-name{font-size:14px;font-weight:600;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:8px}
+.product-card-price{display:flex;align-items:baseline;gap:6px;margin-bottom:6px}
+.product-card-price .current{font-size:19px;font-weight:800;color:var(--accent)}
+.product-card-price .original{font-size:12px;color:var(--text-muted);text-decoration:line-through}
+.product-card-meta{display:flex;align-items:center;justify-content:space-between;font-size:12px;color:var(--text-muted)}
+.product-rating{color:var(--star);font-weight:600}
+
+/* ========== Brand Row ========== */
+.brand-row{display:flex;gap:14px;flex-wrap:wrap;justify-content:center}
+.brand-item{padding:18px 28px;background:var(--bg-card);border-radius:14px;border:1px solid var(--border);font-weight:700;font-size:17px;cursor:pointer;transition:all 0.3s;text-decoration:none;color:var(--text-primary)}
+.brand-item:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg);border-color:var(--accent-light);color:var(--accent)}
+
+/* ========== Login / Register Page ========== */
+.auth-page{max-width:440px;margin:40px auto;padding:40px 32px;background:var(--bg-card);border-radius:20px;border:1px solid var(--border);box-shadow:var(--shadow);transition:background 0.6s}
+.auth-page h2{font-size:24px;font-weight:800;text-align:center;margin-bottom:8px}
+.auth-page .auth-subtitle{text-align:center;color:var(--text-muted);font-size:13px;margin-bottom:28px}
+.auth-input-group{margin-bottom:18px}
+.auth-input-group label{display:block;font-size:13px;font-weight:600;margin-bottom:6px;color:var(--text-secondary)}
+.auth-input-group input{width:100%;padding:12px 16px;border:1px solid var(--border);border-radius:12px;font-size:14px;background:var(--input-bg);color:var(--text-primary);outline:none;transition:all 0.3s}
+.auth-input-group input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(var(--accent-rgb),0.1)}
+.auth-submit-btn{width:100%;padding:13px;background:var(--accent);color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;transition:all 0.3s;margin-top:8px}
+.auth-submit-btn:hover{background:var(--accent-dark);transform:translateY(-1px)}
+.auth-switch-text{text-align:center;margin-top:18px;font-size:13px;color:var(--text-muted)}
+.auth-switch-text a{color:var(--accent);cursor:pointer;font-weight:600}
+.auth-switch-text a:hover{text-decoration:underline}
+
+/* Cat Paw Button */
+.cat-paw-divider{display:flex;align-items:center;gap:14px;margin:20px 0}
+.cat-paw-line{flex:1;height:1px;background:var(--border)}
+.cat-paw-btn{width:46px;height:46px;border-radius:50%;border:2px solid var(--border);background:var(--bg-secondary);cursor:pointer;font-size:24px;transition:all 0.3s;display:flex;align-items:center;justify-content:center;padding:0;line-height:1;flex-shrink:0;color:var(--text-secondary)}
+.cat-paw-btn:hover{border-color:var(--accent);background:var(--accent);transform:scale(1.15);box-shadow:0 4px 18px rgba(var(--accent-rgb),0.4);color:#fff}
+.cat-paw-btn:active{transform:scale(0.92)}
+
+/* ========== Product Detail Page ========== */
+.detail-container{display:flex;gap:32px;flex-wrap:wrap}
+.detail-img-area{flex:0 0 380px;min-height:380px;background:var(--bg-secondary);border-radius:18px;display:flex;align-items:center;justify-content:center;border:1px solid var(--border);transition:background 0.6s}
+.detail-info{flex:1;min-width:300px}
+.detail-info h2{font-size:24px;font-weight:800;margin-bottom:6px;line-height:1.3}
+.detail-rating{color:var(--star);font-size:14px;margin-bottom:16px}
+.detail-price-block{margin:18px 0;padding:16px;background:var(--bg-secondary);border-radius:12px;transition:background 0.6s}
+.detail-price-current{font-size:32px;font-weight:900;color:var(--accent)}
+.detail-price-original{font-size:16px;color:var(--text-muted);text-decoration:line-through;margin-left:10px}
+.detail-desc{color:var(--text-secondary);font-size:14px;line-height:1.8;margin-bottom:20px}
+.detail-tags{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+.detail-tag{padding:6px 14px;background:var(--tag-bg);color:var(--tag-text);border-radius:16px;font-size:12px;font-weight:500;transition:background 0.6s,color 0.6s}
+.detail-actions{display:flex;gap:12px;margin-top:24px}
+.detail-btn-cart{flex:1;padding:14px;background:var(--accent);color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;transition:all 0.3s}
+.detail-btn-cart:hover{background:var(--accent-dark)}
+.detail-btn-buy{flex:1;padding:14px;background:var(--bg-secondary);color:var(--text-primary);border:1px solid var(--border);border-radius:12px;font-size:16px;font-weight:600;cursor:pointer;transition:all 0.3s}
+.detail-btn-buy:hover{border-color:var(--accent);color:var(--accent)}
+
+/* ========== Product List Page ========== */
+.list-toolbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:12px}
+.list-count{font-size:14px;color:var(--text-muted)}
+.list-sort{display:flex;gap:6px}
+.sort-btn{padding:7px 16px;border:1px solid var(--border);border-radius:18px;font-size:13px;cursor:pointer;background:var(--bg-card);color:var(--text-secondary);transition:all 0.2s;white-space:nowrap}
+.sort-btn:hover,.sort-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+/* ========== Footer ========== */
+.app-footer{background:var(--footer-bg);border-top:1px solid var(--border);margin-top:auto;padding:36px 20px 20px;transition:background 0.6s}
+.footer-inner{max-width:1320px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:32px}
+.footer-col h4{font-size:15px;font-weight:700;margin-bottom:14px;color:var(--text-primary)}
+.footer-col a{display:block;color:var(--text-muted);font-size:13px;line-height:2.4;transition:color 0.2s;text-decoration:none}
+.footer-col a:hover{color:var(--accent)}
+.footer-bottom{max-width:1320px;margin:20px auto 0;padding-top:18px;border-top:1px solid var(--border);text-align:center;font-size:12px;color:var(--text-muted)}
+
+/* ========== Cart Popup ========== */
+.cart-popup-mask{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:200;opacity:0;pointer-events:none;transition:opacity 0.3s}
+.cart-popup-mask.open{opacity:1;pointer-events:auto}
+.cart-popup{position:fixed;top:0;right:0;width:400px;max-width:100vw;height:100%;background:var(--bg-card);z-index:201;box-shadow:var(--shadow-lg);transform:translateX(100%);transition:transform 0.35s cubic-bezier(0.4,0,0.2,1);display:flex;flex-direction:column}
+.cart-popup.open{transform:translateX(0)}
+.cart-popup-header{padding:20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.cart-popup-header h3{font-size:18px}
+.cart-popup-close{background:none;border:none;font-size:24px;cursor:pointer;color:var(--text-secondary);padding:4px 8px;line-height:1}
+.cart-popup-items{flex:1;overflow-y:auto;padding:16px}
+.cart-empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;color:var(--text-muted);gap:12px}
+.cart-empty-state .icon{font-size:60px}
+.cart-popup-footer{padding:20px;border-top:1px solid var(--border);display:none}
+.cart-popup-footer.show{display:block}
+.cart-total-row{display:flex;justify-content:space-between;font-size:16px;font-weight:700;margin-bottom:14px}
+.cart-total-price{font-size:22px;color:var(--accent)}
+.cart-checkout-btn{width:100%;padding:14px;background:var(--accent);color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;transition:all 0.3s}
+.cart-checkout-btn:hover{background:var(--accent-dark);transform:translateY(-1px)}
+
+/* Cart Recommended */
+.cart-recommend{padding:12px 16px;border-top:1px solid var(--border)}
+.cart-recommend h4{font-size:13px;color:var(--text-muted);margin-bottom:10px}
+.cart-rec-grid{display:flex;gap:10px;overflow-x:auto;padding-bottom:4px;scrollbar-width:thin}
+.cart-rec-item{flex:0 0 120px;background:var(--bg-secondary);border-radius:10px;padding:8px;cursor:pointer;text-align:center;border:1px solid var(--border);transition:all 0.2s}
+.cart-rec-item:hover{border-color:var(--accent);transform:translateY(-2px)}
+.cart-rec-item .rec-img{width:48px;height:48px;margin:0 auto 6px;display:flex;align-items:center;justify-content:center}
+.cart-rec-item .rec-name{font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-bottom:3px}
+.cart-rec-item .rec-price{font-size:13px;font-weight:700;color:var(--accent)}
+
+/* ========== Checkout Modal ========== */
+.checkout-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.55);z-index:300;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.3s}
+.checkout-overlay.open{opacity:1;pointer-events:auto}
+.checkout-modal{background:var(--bg-card);border-radius:20px;max-width:700px;width:95%;max-height:90vh;overflow-y:auto;padding:32px;position:relative;transition:background 0.6s}
+.checkout-close{position:absolute;top:14px;right:14px;background:var(--bg-secondary);border:none;width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:20px;z-index:10;color:var(--text-secondary);display:flex;align-items:center;justify-content:center}
+.checkout-modal h3{font-size:20px;font-weight:800;margin-bottom:20px}
+.checkout-section{margin-bottom:18px}
+.checkout-section h4{font-size:14px;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.checkout-section input,.checkout-section textarea{width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:10px;font-size:13px;background:var(--input-bg);color:var(--text-primary);outline:none;transition:border-color 0.3s;resize:vertical}
+.checkout-section input:focus,.checkout-section textarea:focus{border-color:var(--accent)}
+.checkout-addr-row{display:flex;gap:10px}
+.checkout-addr-row input{flex:1}
+.payment-options{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.payment-option{padding:14px;border:2px solid var(--border);border-radius:12px;cursor:pointer;text-align:center;font-size:14px;font-weight:600;transition:all 0.25s;background:var(--bg-secondary)}
+.payment-option:hover{border-color:var(--accent-light)}
+.payment-option.selected{border-color:var(--accent);background:rgba(var(--accent-rgb),0.08);color:var(--accent)}
+.payment-option .pay-icon{font-size:24px;display:block;margin-bottom:4px}
+.checkout-summary{background:var(--bg-secondary);border-radius:12px;padding:14px 18px;transition:background 0.6s}
+.checkout-summary-row{display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px;color:var(--text-secondary)}
+.checkout-summary-total{display:flex;justify-content:space-between;font-size:18px;font-weight:800;margin-top:8px;padding-top:8px;border-top:1px solid var(--border)}
+.checkout-submit{width:100%;padding:14px;background:var(--accent);color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;margin-top:16px;transition:all 0.3s}
+.checkout-submit:hover{background:var(--accent-dark)}
+
+/* ========== Coupon Page ========== */
+.coupon-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+.coupon-card{background:var(--bg-card);border-radius:14px;border:1px solid var(--border);overflow:hidden;display:flex;transition:all 0.3s;cursor:pointer;position:relative}
+.coupon-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg)}
+.coupon-card.claimed{opacity:0.55;cursor:default}
+.coupon-card.claimed:hover{transform:none;box-shadow:var(--shadow)}
+.coupon-left{width:110px;background:linear-gradient(135deg,var(--accent),var(--accent-dark));color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px 12px;flex-shrink:0;position:relative}
+.coupon-amount{font-size:32px;font-weight:900;line-height:1}
+.coupon-amount small{font-size:16px}
+.coupon-condition{font-size:11px;margin-top:4px;opacity:0.85}
+.coupon-right{flex:1;padding:16px;display:flex;flex-direction:column;justify-content:center}
+.coupon-name{font-size:14px;font-weight:700;margin-bottom:4px}
+.coupon-desc{font-size:12px;color:var(--text-muted);margin-bottom:6px}
+.coupon-expire{font-size:11px;color:var(--badge)}
+.coupon-claim-btn{padding:6px 16px;background:var(--accent);color:#fff;border:none;border-radius:14px;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.2s;margin-top:auto;align-self:flex-start}
+.coupon-claim-btn:hover{background:var(--accent-dark)}
+.coupon-claim-btn:disabled{background:var(--text-muted);cursor:default}
+.coupon-dots{position:absolute;right:-6px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:5px}
+.coupon-dot{width:12px;height:12px;border-radius:50%;background:var(--bg-primary)}
+.coupon-card.claimed .coupon-left{background:linear-gradient(135deg,#aaa,#888)}
+
+/* ========== Orders Page ========== */
+.order-tabs{display:flex;gap:6px;margin-bottom:20px;flex-wrap:wrap}
+.order-tab{padding:8px 18px;border-radius:18px;border:1px solid var(--border);font-size:13px;cursor:pointer;background:var(--bg-card);color:var(--text-secondary);transition:all 0.2s;white-space:nowrap}
+.order-tab:hover,.order-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.order-card{background:var(--bg-card);border-radius:14px;border:1px solid var(--border);margin-bottom:14px;overflow:hidden;transition:all 0.3s}
+.order-card:hover{box-shadow:var(--shadow)}
+.order-card-header{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-bottom:1px solid var(--border);background:var(--bg-secondary);font-size:13px;transition:background 0.6s}
+.order-id{color:var(--text-muted)}
+.order-status{font-weight:700;padding:4px 12px;border-radius:10px;font-size:12px}
+.order-status.shipping{background:#fff3e0;color:#ff9800}
+.order-status.delivered{background:#e8f5e9;color:#4caf50}
+.order-status.received{background:#e3f2fd;color:#2196f3}
+.order-status.returned{background:#fce4ec;color:#f44336}
+.order-status.pending{background:#f5f5f5;color:#9e9e9e}
+.order-items{display:flex;gap:12px;padding:14px 18px;overflow-x:auto;border-bottom:1px solid var(--border)}
+.order-item{display:flex;gap:8px;align-items:center;flex:0 0 auto;min-width:200px}
+.order-item-img{width:48px;height:48px;border-radius:8px;background:var(--bg-secondary);display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden}
+.order-item-info{font-size:12px;min-width:0}
+.order-item-name{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.order-item-price{color:var(--text-muted);margin-top:2px}
+.order-card-footer{display:flex;justify-content:space-between;align-items:center;padding:14px 18px}
+.order-total{font-size:14px;color:var(--text-secondary)}
+.order-total b{font-size:18px;color:var(--accent)}
+.order-actions{display:flex;gap:8px;flex-wrap:wrap}
+.order-btn{padding:7px 16px;border-radius:16px;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.2s;border:1px solid var(--border);background:var(--bg-card);color:var(--text-secondary)}
+.order-btn:hover{border-color:var(--accent);color:var(--accent)}
+.order-btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+.order-btn.primary:hover{background:var(--accent-dark)}
+.order-btn.danger{color:var(--badge);border-color:var(--badge)}
+.order-btn.danger:hover{background:var(--badge);color:#fff}
+.order-empty{text-align:center;padding:60px 0;color:var(--text-muted)}
+
+/* Tracking Modal */
+.tracking-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.55);z-index:300;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.3s}
+.tracking-overlay.open{opacity:1;pointer-events:auto}
+.tracking-modal{background:var(--bg-card);border-radius:20px;max-width:520px;width:95%;max-height:85vh;overflow-y:auto;padding:28px;position:relative;transition:background 0.6s}
+.tracking-close{position:absolute;top:12px;right:12px;background:var(--bg-secondary);border:none;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:18px;color:var(--text-secondary);display:flex;align-items:center;justify-content:center}
+.tracking-modal h3{font-size:18px;font-weight:800;margin-bottom:16px}
+.tracking-steps{position:relative;padding-left:24px}
+.tracking-step{padding:10px 0 14px 16px;border-left:2px solid var(--border);position:relative;font-size:13px}
+.tracking-step:last-child{border-left-color:transparent}
+.tracking-step.active{border-left-color:var(--accent)}
+.tracking-step.active::before{content:'';position:absolute;left:-6px;top:14px;width:10px;height:10px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 4px rgba(var(--accent-rgb),0.2)}
+.tracking-step::before{content:'';position:absolute;left:-5px;top:14px;width:8px;height:8px;border-radius:50%;background:var(--border)}
+.tracking-step .step-time{font-size:11px;color:var(--text-muted)}
+.tracking-step .step-desc{font-weight:500;margin-top:2px}
+.tracking-actions{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap}
+
+/* Cart item in popup */
+.cart-popup-item{display:flex;gap:12px;padding:12px;border-radius:12px;margin-bottom:10px;background:var(--bg-secondary);transition:background 0.6s}
+.cart-popup-item-img{width:64px;height:64px;border-radius:10px;background:var(--bg-primary);display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden}
+.cart-popup-item-info{flex:1;min-width:0}
+.cart-popup-item-name{font-size:13px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cart-popup-item-price{color:var(--accent);font-weight:700;font-size:14px;margin:4px 0}
+.cart-popup-item-qty{display:flex;align-items:center;gap:8px;margin-top:4px}
+.qty-btn{width:24px;height:24px;border-radius:50%;border:1px solid var(--border);background:var(--bg-card);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;color:var(--text-primary);transition:all 0.2s;line-height:1;padding:0}
+.qty-btn:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+/* ========== Toast ========== */
+.app-toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--text-primary);color:var(--bg-primary);padding:12px 28px;border-radius:24px;font-weight:600;font-size:14px;z-index:500;transition:transform 0.4s cubic-bezier(0.175,0.885,0.32,1.275);pointer-events:none;white-space:nowrap}
+.app-toast.show{transform:translateX(-50%) translateY(0)}
+
+/* ========== Scrollbar ========== */
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:var(--text-muted)}
+
+/* ========== Header User ========== */
+.header-user{display:flex;align-items:center;gap:8px;border:1px solid var(--border);background:var(--bg-card);border-radius:22px;padding:4px 12px 4px 4px;cursor:pointer;color:var(--text-primary);font-size:13px;font-weight:600;max-width:180px;transition:all 0.2s}
+.header-user:hover{border-color:var(--accent);color:var(--accent)}
+.header-avatar{width:28px;height:28px;border-radius:50%;object-fit:cover;display:block}
+.header-avatar-fallback{width:28px;height:28px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.header-nickname{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.header-logout{background:none;border:none;color:var(--text-muted);font-size:13px;cursor:pointer;padding:6px 4px}
+.header-logout:hover{color:var(--badge)}
+.header-admin{background:var(--accent);color:#fff;border:none;border-radius:18px;padding:7px 14px;font-size:13px;font-weight:700;cursor:pointer}
+.header-admin:hover{background:var(--accent-dark)}
+
+/* ========== Product Photo ========== */
+.product-photo{display:block;width:100%;height:100%;object-fit:cover;border-radius:12px}
+.product-card-img .product-photo{border-radius:0}
+.detail-img-area .product-photo{width:380px;height:380px;max-width:100%;border-radius:18px;object-fit:cover}
+.order-item-img .product-photo,.cart-popup-item-img .product-photo,.cart-rec-item .product-photo{border-radius:8px}
+
+/* ========== Auth Extra ========== */
+.auth-error{display:none;margin:-6px 0 14px;padding:10px 14px;border-radius:10px;background:#fef2f2;border:1px solid #fecaca;color:#dc2626;font-size:13px}
+.auth-error.show{display:block}
+.auth-submit-btn:disabled{opacity:0.6;cursor:not-allowed;transform:none}
+
+/* ========== AI 客服浮窗 ========== */
+.cs-fab{position:fixed;right:24px;bottom:24px;width:58px;height:58px;border-radius:50%;border:none;color:#fff;font-size:26px;cursor:pointer;z-index:220;box-shadow:0 8px 24px rgba(0,0,0,0.22);display:flex;align-items:center;justify-content:center;overflow:hidden;transition:transform 0.25s}
+.cs-fab:hover{transform:scale(1.08)}
+.cs-fab-avatar{width:100%;height:100%;object-fit:cover}
+.cs-fab-emoji{line-height:1}
+.cs-panel{position:fixed;right:24px;bottom:94px;width:380px;max-width:calc(100vw - 32px);height:560px;max-height:calc(100vh - 120px);background:var(--bg-card);border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow-lg);z-index:221;display:flex;flex-direction:column;overflow:hidden;animation:fadeInUp 0.25s ease}
+.cs-header{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:var(--cs-color,var(--accent));color:#fff}
+.cs-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:15px;min-width:0}
+.cs-title > span:last-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cs-avatar{width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,0.25);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;font-size:17px}
+.cs-avatar img{width:100%;height:100%;object-fit:cover}
+.cs-header-btns{display:flex;gap:2px}
+.cs-header-btns button{background:rgba(255,255,255,0.18);border:none;color:#fff;width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;padding:0}
+.cs-header-btns button:hover{background:rgba(255,255,255,0.32)}
+.cs-messages{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;background:var(--bg-secondary)}
+.cs-msg{display:flex;max-width:100%}
+.cs-msg.user{justify-content:flex-end}
+.cs-bubble{max-width:82%;padding:9px 13px;border-radius:14px;font-size:13px;line-height:1.6;white-space:pre-wrap;word-break:break-word;background:var(--bg-card);color:var(--text-primary);border:1px solid var(--border)}
+.cs-msg.user .cs-bubble{background:var(--cs-color,var(--accent));color:#fff;border-color:transparent;border-bottom-right-radius:4px}
+.cs-msg.assistant .cs-bubble{border-bottom-left-radius:4px}
+.cs-cursor{animation:csBlink 0.8s steps(1) infinite}
+@keyframes csBlink{50%{opacity:0}}
+.cs-typing{color:var(--text-muted);font-style:italic}
+.cs-input-row{display:flex;gap:8px;padding:10px 12px;border-top:1px solid var(--border);background:var(--bg-card)}
+.cs-input-row textarea{flex:1;resize:none;border:1px solid var(--border);border-radius:12px;padding:9px 12px;font-size:13px;font-family:inherit;background:var(--input-bg);color:var(--text-primary);outline:none;max-height:90px}
+.cs-input-row textarea:focus{border-color:var(--cs-color,var(--accent))}
+.cs-input-row button{border:none;border-radius:12px;padding:0 16px;background:var(--cs-color,var(--accent));color:#fff;font-weight:700;font-size:13px;cursor:pointer}
+.cs-input-row button:disabled{opacity:0.5;cursor:not-allowed}
+.cs-error{padding:8px 14px;background:#fef2f2;color:#dc2626;font-size:12px;border-top:1px solid #fecaca}
+.cs-settings{position:fixed;right:24px;bottom:94px;width:380px;max-width:calc(100vw - 32px);max-height:calc(100vh - 120px);overflow-y:auto;background:var(--bg-card);border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow-lg);z-index:222;padding:16px;animation:fadeInUp 0.2s ease}
+.cs-settings h4{font-size:15px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between}
+.cs-close-x{background:none;border:none;font-size:16px;cursor:pointer;color:var(--text-muted)}
+.cs-settings label{display:block;font-size:12px;font-weight:600;color:var(--text-secondary);margin:10px 0 4px}
+.cs-settings input[type=text],.cs-settings textarea{width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:10px;font-size:13px;font-family:inherit;background:var(--input-bg);color:var(--text-primary);outline:none;resize:vertical}
+.cs-settings input[type=color]{width:52px;height:32px;padding:0;border:1px solid var(--border);border-radius:8px;background:none;cursor:pointer}
+.cs-emoji-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.cs-emoji-btn{width:38px;height:38px;border-radius:50%;border:2px solid var(--border);background:var(--bg-secondary);font-size:19px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0}
+.cs-emoji-btn.active{border-color:var(--accent);background:var(--tag-bg)}
+.cs-upload-label{display:inline-block;padding:8px 14px;border-radius:10px;border:1px dashed var(--border);font-size:12px;color:var(--text-secondary);cursor:pointer;margin-top:4px}
+.cs-upload-label:hover{border-color:var(--accent);color:var(--accent)}
+.cs-upload-label input{display:none}
+.cs-settings-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
+.cs-settings-actions button{padding:8px 16px;border-radius:10px;border:1px solid var(--border);background:var(--bg-card);color:var(--text-secondary);font-size:13px;cursor:pointer}
+.cs-settings-actions .primary{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:700}
+.cs-settings-actions button:disabled{opacity:0.6;cursor:not-allowed}
+
+/* ========== 店主管理 ========== */
+.admin-mask{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.45);z-index:255;opacity:0;pointer-events:none;transition:opacity 0.3s}
+.admin-mask.open{opacity:1;pointer-events:auto}
+.admin-panel{position:fixed;top:0;right:0;width:520px;max-width:100vw;height:100%;background:var(--bg-card);z-index:260;box-shadow:var(--shadow-lg);display:flex;flex-direction:column;transform:translateX(100%);transition:transform 0.35s cubic-bezier(0.4,0,0.2,1)}
+.admin-panel.open{transform:translateX(0)}
+.admin-header{display:flex;align-items:center;justify-content:space-between;padding:18px 20px;border-bottom:1px solid var(--border)}
+.admin-header h3{font-size:18px}
+.admin-header button{background:none;border:none;font-size:22px;cursor:pointer;color:var(--text-secondary)}
+.admin-list{flex:1;overflow-y:auto;padding:14px 16px}
+.admin-row{display:flex;align-items:center;gap:12px;padding:10px;border:1px solid var(--border);border-radius:12px;margin-bottom:10px}
+.admin-thumb{width:52px;height:52px;border-radius:10px;overflow:hidden;background:var(--bg-secondary);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.admin-thumb img{width:100%;height:100%;object-fit:cover}
+.admin-meta{flex:1;min-width:0}
+.admin-name{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.admin-state{font-size:11px;color:var(--text-muted);margin-top:3px}
+.admin-state.ok{color:var(--success)}
+.admin-actions{display:flex;gap:6px;flex-shrink:0}
+.admin-actions button,.admin-actions label{padding:6px 10px;border-radius:8px;border:1px solid var(--border);background:var(--bg-card);color:var(--text-secondary);font-size:12px;cursor:pointer;white-space:nowrap}
+.admin-actions button:hover,.admin-actions label:hover{border-color:var(--accent);color:var(--accent)}
+.admin-actions button:disabled{opacity:0.5;cursor:not-allowed}
+.admin-actions input[type=file]{display:none}
+.admin-footer{padding:14px 16px;border-top:1px solid var(--border);display:flex;align-items:center;gap:12px}
+.admin-all-btn{flex:1;padding:11px;background:var(--accent);color:#fff;border:none;border-radius:10px;font-weight:700;font-size:14px;cursor:pointer}
+.admin-all-btn:disabled{opacity:0.6;cursor:not-allowed}
+.admin-progress{font-size:12px;color:var(--text-muted);white-space:nowrap}
+
+/* ========== Responsive ========== */
+@media(max-width:900px){
+  .header-inner{flex-wrap:wrap;gap:10px}
+  .header-search{order:3;flex-basis:100%;max-width:none}
+  .carousel-wrapper .van-swipe-item{height:240px}
+  .carousel-slide{padding:24px 28px}
+  .carousel-text h3{font-size:22px}
+  .carousel-img{width:120px;height:120px}
+  .product-grid{grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:10px}
+  .detail-container{flex-direction:column}
+  .detail-img-area{flex:0 0 260px;min-height:260px}
+  .footer-inner{grid-template-columns:repeat(2,1fr)}
+  .cart-popup{width:100%}
+  .auth-page{margin:20px;padding:28px 20px}
+}
+@media(max-width:480px){
+  .product-grid{grid-template-columns:repeat(2,1fr)}
+  .carousel-wrapper .van-swipe-item{height:180px}
+  .carousel-slide{padding:16px}
+  .carousel-img{width:80px;height:80px}
+  .brand-row{gap:8px}
+  .brand-item{padding:12px 18px;font-size:14px}
+}
+</style>
+</head>
+<body>
+
+<!-- ===== SKY BACKGROUND (Non-Vue) ===== -->
+<div class="sky-bg"></div>
+<div class="sun">
+  <div class="sun-core"></div>
+  <div class="sun-ray" style="transform:translate(-50%,-100%) rotate(0deg)"></div>
+  <div class="sun-ray" style="transform:translate(-50%,-100%) rotate(36deg)"></div>
+  <div class="sun-ray" style="transform:translate(-50%,-100%) rotate(72deg)"></div>
+  <div class="sun-ray" style="transform:translate(-50%,-100%) rotate(108deg)"></div>
+  <div class="sun-ray" style="transform:translate(-50%,-100%) rotate(144deg)"></div>
+  <div class="sun-ray" style="transform:translate(-50%,-100%) rotate(180deg)"></div>
+  <div class="sun-ray" style="transform:translate(-50%,-100%) rotate(216deg)"></div>
+  <div class="sun-ray" style="transform:translate(-50%,-100%) rotate(252deg)"></div>
+  <div class="sun-ray" style="transform:translate(-50%,-100%) rotate(288deg)"></div>
+  <div class="sun-ray" style="transform:translate(-50%,-100%) rotate(324deg)"></div>
+</div>
+<div class="day-particle" style="left:10%;animation-duration:7s;animation-delay:0s;width:8px;height:8px"></div>
+<div class="day-particle" style="left:25%;animation-duration:5.5s;animation-delay:1s;width:5px;height:5px"></div>
+<div class="day-particle" style="left:45%;animation-duration:8s;animation-delay:2s;width:10px;height:10px"></div>
+<div class="day-particle" style="left:65%;animation-duration:6.5s;animation-delay:0.5s;width:6px;height:6px"></div>
+<div class="day-particle" style="left:80%;animation-duration:7.5s;animation-delay:3s;width:9px;height:9px"></div>
+<div class="day-particle" style="left:90%;animation-duration:5s;animation-delay:1.5s;width:7px;height:7px"></div>
+<div class="day-particle" style="left:15%;animation-duration:9s;animation-delay:2.5s;width:4px;height:4px"></div>
+<div class="day-particle" style="left:55%;animation-duration:6s;animation-delay:4s;width:11px;height:11px"></div>
+<div class="moon-container"><div class="moon"></div></div>
+<div class="stars-container" id="starsContainer"></div>
+<div class="shooting-star" style="top:15%;left:60%;animation-delay:3s"></div>
+<div class="shooting-star" style="top:25%;left:30%;animation-delay:8s"></div>
+
+<!-- ===== VUE APP ===== -->
+<div id="app">
+  <!-- Header -->
+  <header class="app-header">
+    <div class="header-inner">
+      <div class="header-logo" @click="goHome">
+        <div class="header-logo-icon">呼</div>提丰购物
+      </div>
+      <div class="header-search">
+        <input type="text" v-model="searchQuery" placeholder="搜索商品、品牌、分类..." @keyup.enter="handleSearch">
+        <button @click="handleSearch">🔍 搜索</button>
+      </div>
+      <div class="header-actions">
+        <button class="header-btn" @click="goChat" title="回到提丰会话">🐾</button>
+        <button class="theme-toggle" @click="toggleTheme" title="切换日/夜模式">
+          <span class="theme-toggle-inner sun">☀️</span>
+          <span class="theme-toggle-inner moon">🌙</span>
+        </button>
+        <button v-if="!user" class="header-btn" @click="goLogin" title="登录后进入提丰会话">👤</button>
+        <button v-else class="header-user" @click="goChat" :title="'进入提丰会话：'+(user.nickname||user.username)">
+          <img v-if="user.avatarUrl" :src="user.avatarUrl" class="header-avatar" alt="头像">
+          <span v-else class="header-avatar-fallback">{{(user.nickname||user.username||'主').charAt(0)}}</span>
+          <span class="header-nickname">{{user.nickname||user.username}}</span>
+        </button>
+        <button v-if="user" class="header-logout" @click="logout" title="退出登录">退出</button>
+        <button v-if="isAdmin" class="header-admin" @click="openAdmin" title="店主管理">管理</button>
+        <button class="header-btn" @click="toggleCartPopup" title="购物车">
+          🛒<span class="cart-badge" v-if="cartTotalCount>0">{{cartTotalCount}}</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Navigation -->
+  <nav class="app-nav">
+    <div class="nav-inner">
+      <router-link to="/" class="nav-link" :class="{active:$route.path==='/'}">🏠 首页</router-link>
+      <router-link to="/products" class="nav-link">📱 数码电子</router-link>
+      <router-link to="/products?cat=fashion" class="nav-link">👗 服饰美妆</router-link>
+      <router-link to="/products?cat=home" class="nav-link">🏠 家居生活</router-link>
+      <router-link to="/products?cat=sports" class="nav-link">⚽ 运动户外</router-link>
+      <router-link to="/products?cat=food" class="nav-link">🍜 食品生鲜</router-link>
+      <router-link to="/products?cat=book" class="nav-link">📚 图书文创</router-link>
+      <router-link to="/products?cat=toy" class="nav-link">🎮 玩具乐器</router-link>
+      <router-link to="/coupons" class="nav-link">🎫 领券中心</router-link>
+      <router-link to="/orders" class="nav-link">📋 我的订单</router-link>
+    </div>
+  </nav>
+
+  <!-- Router View -->
+  <router-view v-slot="{ Component }">
+    <component :is="Component" :cart="cart" :products="products" @add-cart="addToCart"/>
+  </router-view>
+
+  <!-- Footer -->
+  <footer class="app-footer">
+    <div class="footer-inner">
+      <div class="footer-col">
+        <h4>购物指南</h4>
+        <a href="#">购物流程</a><a href="#">会员介绍</a><a href="#">常见问题</a><a href="#">联系客服</a>
+      </div>
+      <div class="footer-col">
+        <h4>配送方式</h4>
+        <a href="#">上门自提</a><a href="#">快递运输</a><a href="#">物流跟踪</a><a href="#">配送范围</a>
+      </div>
+      <div class="footer-col">
+        <h4>支付方式</h4>
+        <a href="#">货到付款</a><a href="#">在线支付</a><a href="#">分期付款</a><a href="#">优惠券使用</a>
+      </div>
+      <div class="footer-col">
+        <h4>售后服务</h4>
+        <a href="#">退换货政策</a><a href="#">退款说明</a><a href="#">联系卖家</a><a href="#">投诉建议</a>
+      </div>
+    </div>
+    <div class="footer-bottom">© 2026 提丰购物 youxuan.com — 您的一站式购物平台 | 用心选好物，品质有保障</div>
+  </footer>
+
+  <!-- Cart Popup -->
+  <div class="cart-popup-mask" :class="{open:cartOpen}" @click="toggleCartPopup"></div>
+  <div class="cart-popup" :class="{open:cartOpen}">
+    <div class="cart-popup-header">
+      <h3>🛒 购物车</h3>
+      <button class="cart-popup-close" @click="toggleCartPopup">✕</button>
+    </div>
+    <div class="cart-popup-items">
+      <div v-if="cart.length===0" class="cart-empty-state">
+        <span class="icon">🛒</span><p>购物车是空的</p><p style="font-size:12px">快去挑选心仪的商品吧~</p>
+      </div>
+      <div v-for="item in cart" :key="item.id" class="cart-popup-item">
+        <div class="cart-popup-item-img">
+          <img v-if="getProductImage(item.id)" :src="getProductImage(item.id)" @error="onImageError(item.id)" loading="lazy" class="product-photo" alt="">
+          <span v-else v-html="getProductSVG(item.id,40)"></span>
+        </div>
+        <div class="cart-popup-item-info">
+          <div class="cart-popup-item-name">{{getProductName(item.id)}}</div>
+          <div class="cart-popup-item-price">¥{{getProductPrice(item.id)}}</div>
+          <div class="cart-popup-item-qty">
+            <button class="qty-btn" @click="changeQty(item.id,-1)">−</button>
+            <span>{{item.qty}}</span>
+            <button class="qty-btn" @click="changeQty(item.id,1)">+</button>
+          </div>
+        </div>
+        <button class="qty-btn" style="align-self:flex-start;color:var(--badge);border-color:var(--badge);flex-shrink:0" @click="removeFromCart(item.id)">✕</button>
+      </div>
+    </div>
+    <div class="cart-recommend" v-if="cart.length>0">
+      <h4>🔥 为你推荐</h4>
+      <div class="cart-rec-grid">
+        <div v-for="p in recommendedProducts" :key="p.id" class="cart-rec-item" @click.stop="goToProduct(p.id)">
+          <div class="rec-img">
+            <img v-if="p.image" :src="p.image" @error="p.image=''" loading="lazy" class="product-photo" alt="">
+            <span v-else v-html="getProductSVG(p.id,44)"></span>
+          </div>
+          <div class="rec-name">{{p.name}}</div>
+          <div class="rec-price">¥{{p.price}}</div>
+        </div>
+      </div>
+    </div>
+    <div class="cart-popup-footer" :class="{show:cart.length>0}">
+      <div class="cart-total-row">合计 <span class="cart-total-price">¥{{cartTotalPrice}}</span></div>
+      <button class="cart-checkout-btn" @click="openCheckout">立即结算</button>
+    </div>
+  </div>
+
+  <!-- Checkout Modal -->
+  <div class="checkout-overlay" :class="{open:checkoutOpen}" @click.self="checkoutOpen=false">
+    <div class="checkout-modal" v-if="checkoutOpen">
+      <button class="checkout-close" @click="checkoutOpen=false">✕</button>
+      <h3>📦 确认订单</h3>
+      <div class="checkout-section">
+        <h4>📍 收货地址</h4>
+        <div class="checkout-addr-row">
+          <input v-model="checkoutAddr.name" placeholder="收货人姓名">
+          <input v-model="checkoutAddr.phone" placeholder="手机号码">
+        </div>
+        <textarea v-model="checkoutAddr.address" placeholder="详细地址（省/市/区/街道）" rows="2" style="margin-top:8px;width:100%"></textarea>
+      </div>
+      <div class="checkout-section">
+        <h4>💳 支付方式</h4>
+        <div class="payment-options">
+          <div class="payment-option" :class="{selected:checkoutPayment==='alipay'}" @click="checkoutPayment='alipay'">
+            <span class="pay-icon">🔵</span>支付宝
+          </div>
+          <div class="payment-option" :class="{selected:checkoutPayment==='wechat'}" @click="checkoutPayment='wechat'">
+            <span class="pay-icon">🟢</span>微信支付
+          </div>
+          <div class="payment-option" :class="{selected:checkoutPayment==='card'}" @click="checkoutPayment='card'">
+            <span class="pay-icon">💳</span>银行卡
+          </div>
+          <div class="payment-option" :class="{selected:checkoutPayment==='cod'}" @click="checkoutPayment='cod'">
+            <span class="pay-icon">💵</span>货到付款
+          </div>
+        </div>
+      </div>
+      <div class="checkout-summary">
+        <div class="checkout-summary-row" v-for="item in cart" :key="item.id">
+          <span>{{getProductName(item.id)}} ×{{item.qty}}</span>
+          <span>¥{{getProductPrice(item.id)*item.qty}}</span>
+        </div>
+        <div class="checkout-summary-row"><span>运费</span><span style="color:var(--success)">免运费</span></div>
+        <div class="checkout-summary-total"><span>应付总额</span><span style="color:var(--accent)">¥{{cartTotalPrice}}</span></div>
+      </div>
+      <button class="checkout-submit" @click="submitOrder">提交订单</button>
+    </div>
+  </div>
+
+  <!-- ===== AI 客服浮窗 ===== -->
+  <button class="cs-fab" :style="{background: cssColor}" @click="toggleCs" title="AI 客服">
+    <img v-if="isImgAvatar(csProfile.avatarUrl)" :src="csProfile.avatarUrl" class="cs-fab-avatar" alt="客服">
+    <span v-else class="cs-fab-emoji">{{ csProfile.avatarUrl || '🐾' }}</span>
+  </button>
+
+  <div v-show="csOpen" class="cs-panel" :style="{'--cs-color': cssColor}">
+    <div class="cs-header">
+      <div class="cs-title">
+        <span class="cs-avatar">
+          <img v-if="isImgAvatar(csProfile.avatarUrl)" :src="csProfile.avatarUrl" alt="">
+          <template v-else>{{ csProfile.avatarUrl || '🐾' }}</template>
+        </span>
+        <span>{{ csProfile.botName || '提丰客服' }}</span>
+      </div>
+      <div class="cs-header-btns">
+        <button @click="openCsSettings" title="设置">⚙️</button>
+        <button @click="csOpen=false" title="关闭">✕</button>
+      </div>
+    </div>
+    <div class="cs-messages" ref="csMessages">
+      <div v-for="(m,i) in csMessages" :key="i" class="cs-msg" :class="m.role">
+        <div class="cs-bubble">{{ m.content }}<span v-if="m.streaming" class="cs-cursor">▍</span></div>
+      </div>
+      <div v-if="csTyping" class="cs-msg assistant"><div class="cs-bubble cs-typing">正在输入…</div></div>
+    </div>
+    <div class="cs-input-row">
+      <textarea v-model="csInput" rows="2" placeholder="和提丰客服聊聊…（Enter 发送）" @keydown.enter.exact.prevent="onCsEnter"></textarea>
+      <button :disabled="csSending || !csInput.trim()" @click="sendCs">发送</button>
+    </div>
+    <div v-if="csError" class="cs-error">{{ csError }}</div>
+  </div>
+
+  <!-- ===== AI 客服设置抽屉 ===== -->
+  <div v-show="csSettingsOpen" class="cs-settings" :style="{'--cs-color': cssColor}">
+    <h4><span>⚙️ 客服设置</span><button class="cs-close-x" @click="csSettingsOpen=false">✕</button></h4>
+    <label>客服名字</label>
+    <input type="text" v-model="csDraft.botName" maxlength="30" placeholder="提丰客服">
+    <label>人设 / 性格</label>
+    <textarea v-model="csDraft.persona" rows="3" placeholder="温柔、简短、爱用喵结尾…"></textarea>
+    <label>开场白</label>
+    <input type="text" v-model="csDraft.greeting" maxlength="120" placeholder="主人好，我是提丰喵~">
+    <label>主题色</label>
+    <div><input type="color" v-model="csDraft.themeColor"></div>
+    <label>预设头像</label>
+    <div class="cs-emoji-row">
+      <button v-for="e in csEmojiPresets" :key="e" class="cs-emoji-btn" :class="{active: csDraft.avatarUrl===e}" @click="csDraft.avatarUrl=e">{{ e }}</button>
+    </div>
+    <label>或粘贴图片链接</label>
+    <input type="text" v-model="csDraft.avatarUrl" placeholder="https://... 或 data:image/...">
+    <label>上传头像图片</label>
+    <label class="cs-upload-label">
+      📷 选择图片上传
+      <input type="file" accept="image/*" @change="uploadCsAvatar">
+    </label>
+    <div class="cs-settings-actions">
+      <button @click="csSettingsOpen=false">取消</button>
+      <button class="primary" :disabled="csSaving" @click="saveCsProfile">{{ csSaving ? '保存中…' : '保存' }}</button>
+    </div>
+  </div>
+
+  <!-- ===== 店主管理抽屉 ===== -->
+  <div class="admin-mask" :class="{open:adminOpen}" @click="adminOpen=false"></div>
+  <div class="admin-panel" :class="{open:adminOpen}">
+    <div class="admin-header">
+      <h3>🛠️ 商品图片管理</h3>
+      <button @click="adminOpen=false">✕</button>
+    </div>
+    <div class="admin-list">
+      <div v-for="p in products" :key="p.id" class="admin-row">
+        <div class="admin-thumb">
+          <img v-if="p.image" :src="p.image" @error="p.image=''" alt="">
+          <span v-else v-html="getProductSVG(p.id,44)"></span>
+        </div>
+        <div class="admin-meta">
+          <div class="admin-name">{{ p.name }}</div>
+          <div class="admin-state" :class="{ok: p.image}">{{ p.image ? '已配图' : '占位图' }}</div>
+        </div>
+        <div class="admin-actions">
+          <button :disabled="adminBusy[p.id]" @click="refetchImage(p)">{{ adminBusy[p.id] ? '…' : '重抓' }}</button>
+          <label>
+            上传<input type="file" accept="image/*" @change="uploadImage(p,$event)">
+          </label>
+        </div>
+      </div>
+    </div>
+    <div class="admin-footer">
+      <button class="admin-all-btn" :disabled="adminAllRunning" @click="refetchAllImages">
+        {{ adminAllRunning ? '重抓中…' : '一键重抓全部' }}
+      </button>
+      <span class="admin-progress">{{ adminAllDone }}/{{ adminAllTotal }}</span>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="app-toast" :class="{show:toastShow}">{{toastMsg}}</div>
+</div>
+
+<!-- ===== CDN Scripts ===== -->
+<script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+<script src="https://unpkg.com/vue-router@4/dist/vue-router.global.prod.js"></script>
+<script src="https://unpkg.com/vant@4/lib/vant.min.js"></script>
+
+<script>
+// ========== Generate Stars ==========
+(function(){
+  const c=document.getElementById('starsContainer');
+  const colors=['#ffffff','#ffe9c4','#c4dfff','#ffe0f0','#e0ffe0','#f0e0ff'];
+  let h='';
+  for(let i=0;i<150;i++){
+    const s=Math.random()*2.5+1, x=Math.random()*100, y=Math.random()*100;
+    const d=Math.random()*3+2, dl=Math.random()*5;
+    const cl=colors[Math.floor(Math.random()*colors.length)];
+    h+=`<div class="star" style="left:${x}%;top:${y}%;width:${s}px;height:${s}px;--dur:${d}s;--delay:${dl}s;background:${cl};box-shadow:0 0 ${s*2}px ${cl}"></div>`;
+  }
+  c.innerHTML=h;
+})();
+
+// ========== Product Data ==========
+const productsData = [
+  {id:1,name:'iPhone 15 Pro 256GB 原色钛金属',price:8999,original:9999,sold:28390,rating:4.9,cat:'digital',tag:'hot',desc:'A17 Pro芯片|8GB运存|4800万像素三摄|USB-C接口|钛金属边框|灵动岛|全天候显示'},
+  {id:2,name:'MacBook Air 15英寸 M3芯片 8+256G',price:9499,original:10499,sold:15230,rating:4.8,cat:'digital',tag:'new',desc:'M3芯片|15.3英寸Liquid Retina屏|8GB统一内存|256GB SSD|18小时续航|午夜色|无风扇设计'},
+  {id:3,name:'Sony WH-1000XM5 头戴式降噪耳机',price:2499,original:2999,sold:45780,rating:4.9,cat:'digital',tag:'hot',desc:'行业领先降噪|30小时续航|快充3分钟播3小时|轻量化仅250g|多点连接|高解析度音频'},
+  {id:4,name:'天梭力洛克系列自动机械男士腕表',price:3599,original:4600,sold:8920,rating:4.7,cat:'fashion',tag:null,desc:'瑞士制造|自动上链机芯|蓝宝石玻璃表镜|316L精钢表壳|30米防水|真皮表带|经典罗马刻度'},
+  {id:5,name:'Nike Air Zoom Pegasus 40 飞马跑鞋',price:899,original:1199,sold:67820,rating:4.8,cat:'sports',tag:'hot',desc:'Zoom Air气垫|网面透气鞋面|Flywire飞线技术|耐磨橡胶外底|轻量缓震|城市路跑专属'},
+  {id:6,name:'COACH 经典标志帆布单肩托特包',price:1599,original:3500,sold:12340,rating:4.6,cat:'fashion',tag:null,desc:'经典C纹帆布|真皮镶边|内置拉链袋|磁性搭扣|可调节肩带|大容量通勤设计'},
+  {id:7,name:'Canon EOS R6 Mark II 全画幅微单',price:6299,original:16499,sold:5670,rating:4.9,cat:'digital',tag:'new',desc:'2420万像素全画幅CMOS|DIGIC X处理器|4K 60p视频|40张/秒连拍|机身防抖|双卡槽'},
+  {id:8,name:'《人间值得》心灵成长励志畅销书',price:59,original:89,sold:189200,rating:4.8,cat:'book',tag:'hot',desc:'90岁心理医生恒子奶奶写给生活的哲思小书|关于工作、爱、人际关系、幸福、死亡等课题'},
+  {id:9,name:'Chanel N°5 五号之水 经典淡香精 100ml',price:1299,original:1680,sold:23450,rating:4.8,cat:'fashion',tag:null,desc:'花香调|前调:柠檬橘子橙花油|中调:玫瑰茉莉依兰|后调:雪松白麝香|持久留香8小时+'},
+  {id:10,name:'Ray-Ban 雷朋飞行员系列偏光太阳镜',price:1599,original:1980,sold:32100,rating:4.7,cat:'fashion',tag:null,desc:'经典飞行员款|G-15偏光镜片|金属框架|UV400防护|意大利制造|附赠皮质眼镜盒'},
+  {id:11,name:'法式复古碎花连衣裙 2026夏季新款',price:899,original:599,sold:45210,rating:4.6,cat:'fashion',tag:'new',desc:'V领设计|高腰A字版型|轻盈雪纺面料|碎花印花|中长款|透气舒适|约会度假必备'},
+  {id:12,name:'PlayStation 5 光驱版 国行主机',price:3999,original:4299,sold:89230,rating:4.9,cat:'toy',tag:'hot',desc:'定制8核AMD Zen2|RDNA 2 GPU|16GB GDDR6|825GB SSD|4K 120Hz|DualSense手柄|光追'},
+  {id:13,name:'iPad Pro 12.9英寸 M2芯片 WiFi 256G',price:6799,original:9299,sold:18920,rating:4.9,cat:'digital',tag:'new',desc:'M2芯片|12.9英寸Liquid Retina XDR屏|256GB|Thunderbolt|Apple Pencil悬停|面容ID'},
+  {id:14,name:'AirPods Pro 第二代 MagSafe充电盒',price:1899,original:1999,sold:156700,rating:4.8,cat:'digital',tag:'hot',desc:'H2芯片|自适应降噪|通透模式|个性化空间音频|触控操作|6小时续航|MagSafe充电'},
+  {id:15,name:'樱桃 MX Board 3.0S 机械键盘 红轴',price:699,original:999,sold:23100,rating:4.7,cat:'digital',tag:null,desc:'德国CHERRY MX红轴|109键全键无冲|铝合金上盖|ABS键帽|白色背光|有线连接|办公游戏两用'},
+  {id:16,name:'德龙全自动咖啡机 Magnifica S',price:1299,original:3999,sold:8910,rating:4.7,cat:'home',tag:null,desc:'豆到杯一键制作|15巴泵压|内置研磨器|卡布奇诺系统|可调浓度|1.8L水箱|意大利品牌'},
+  {id:17,name:'戴森 V15 Detect 无绳手持吸尘器',price:899,original:4990,sold:26780,rating:4.8,cat:'home',tag:'new',desc:'激光探测微尘|压电式传感器|Hyperdymium马达|60分钟续航|LCD屏实时显示|HEPA过滤'},
+  {id:18,name:'LEGO 兰博基尼Sián FKP 37 机械组',price:599,original:3399,sold:4560,rating:4.9,cat:'toy',tag:'new',desc:'3696颗粒|1:8比例|可动V12引擎|可动尾翼|8速序列变速箱|收藏级展示模型|18岁以上'},
+  {id:19,name:'三顿半 超即溶精品咖啡 冷萃风味 24颗',price:599,original:189,sold:134500,rating:4.7,cat:'food',tag:'hot',desc:'3秒速溶|100%阿拉比卡|冷萃工艺|精品咖啡风味|迷你便携胶囊|0糖0添加'},
+  {id:20,name:'农夫山泉 17.5°橙 赣南脐橙 5kg礼盒装',price:899,original:89,sold:89700,rating:4.8,cat:'food',tag:'hot',desc:'黄金糖酸比17.5°|赣南直采|新鲜采摘|单果200g+|5kg家庭装约24枚|汁多味甜'},
+  {id:21,name:'五号化合物 超级能力激活药剂 10ml×6支',price:99999,original:199999,sold:120,rating:4.5,cat:'toy',tag:'hot',desc:'源自神秘实验室|蓝色荧光液体|静脉注射|激活潜在超能力基因|效果因人而异|非卖品限量复刻|仅供展示收藏'},
+  {id:22,name:'奶龙正版授权 软糯Q弹解压玩偶 45cm',price:159,original:229,sold:89640,rating:4.9,cat:'toy',tag:'hot',desc:'正版IP授权|超柔短毛绒面料|Q弹慢回弹填充|45cm大号抱枕尺寸|可机洗不掉色|治愈系奶龙陪你每一天'},
+  {id:23,name:'奶龙正版限定 亚克力Q版立牌摆件 15cm',price:49,original:69,sold:128500,rating:4.8,cat:'toy',tag:'new',desc:'正版授权|高透亚克力材质|双面高清印刷|15cm桌面摆件|附赠底座|多款可选|收藏展示两用'},
+  {id:24,name:'腾讯控股 港股通标的 1手=100股',price:42800,original:48500,sold:3250,rating:4.3,cat:'digital',tag:null,desc:'港股通标的|1手=100股|实时行情波动|入市有风险投资需谨慎|当前参考价428港元/股|含交易佣金'},
+  {id:25,name:'华为MateBook X Pro 2026款 深空灰',price:8999,original:10999,sold:18760,rating:4.8,cat:'digital',tag:'new',desc:'Intel Ultra 9处理器|14.2英寸OLED原色屏|32GB内存|1TB SSD|触控屏|1.08kg超轻薄|超级终端多屏协同'},
+  {id:26,name:'飞天茅台 53度酱香型白酒 500ml',price:2899,original:1499,sold:45620,rating:4.9,cat:'food',tag:'hot',desc:'贵州茅台酒|53度酱香型|传统12987工艺|五年窖藏|500ml经典装|酒体微黄清澈|酱香突出幽雅细腻'},
+  {id:27,name:'冰墩墩 冬奥纪念版水晶球摆件',price:299,original:399,sold:67300,rating:4.9,cat:'toy',tag:null,desc:'2022冬奥官方授权|熊猫冰晶外壳|水晶球内置飘雪效果|8cm高|树脂材质|音乐盒底座|收藏送礼佳品'},
+  {id:28,name:'小米SU7 Ultra 1:18合金仿真车模',price:699,original:899,sold:23400,rating:4.8,cat:'toy',tag:'new',desc:'小米官方授权|1:18精准比例|锌合金车身|四门可开|方向盘联动前轮转向|底盘精细还原|亚克力展示盒'},
+  {id:29,name:'三角洲行动 精英干员战术手办 25cm',price:599,original:799,sold:15680,rating:4.8,cat:'toy',tag:'hot',desc:'官方正版授权|PVC+ABS材质|25cm高精涂装|战术装备可拆卸|附赠专属武器配件|限定编号收藏证书|三角洲特勤标志'},
+  {id:30,name:'三角洲行动 限定版金属徽章套装 8枚',price:199,original:299,sold:34200,rating:4.9,cat:'toy',tag:'new',desc:'锌合金电镀工艺|含8枚干员阵营徽章|蝴蝶扣固定|附赠展示绒布板|直径3.5cm|三角洲官方授权|收藏送礼两用'},
+  {id:31,name:'三角洲行动 战术风格双肩背包 40L',price:359,original:499,sold:8920,rating:4.7,cat:'sports',tag:null,desc:'1000D尼龙面料|MOLLE模块化织带系统|40L大容量|防水涂层|透气背负系统|三角洲主题刺绣徽章|日常通勤户外两用'},
+  {id:32,name:'三角洲行动 官方设定集 精装画册 208页',price:169,original:249,sold:23100,rating:4.9,cat:'book',tag:'hot',desc:'208页全彩铜版纸印刷|收录干员设定武器图鉴场景原画|硬壳精装锁线装订|附赠限定角色海报×4|三角洲世界观完整揭秘'},
+  {id:33,name:'三角洲行动 主题RGB游戏鼠标垫 90×40cm',price:129,original:199,sold:45600,rating:4.7,cat:'digital',tag:'new',desc:'90×40cm超大尺寸|细腻布面精准操控|RGB灯带环绕|USB供电|防滑橡胶基底|三角洲主题涂装|游戏办公皆宜'},
+  {id:34,name:'非洲之心 天然红钻铂金吊坠 1.08克拉',price:168000,original:218000,sold:7,rating:5.0,cat:'fashion',tag:'hot',desc:'GIA认证天然红钻|1.08克拉枕形切割|Pt950铂金镶嵌|Fancy Red色级|VS1净度|附GIA证书|全球限量仅此一颗|非洲传奇宝藏'},
+  {id:35,name:'海洋之泪 天然海蓝宝铂金项链 18.5克拉',price:52800,original:69800,sold:23,rating:4.9,cat:'fashion',tag:'new',desc:'巴西天然海蓝宝石|18.5克拉梨形切割|Pt950铂金镶嵌|圣玛利亚色|IF内部无瑕|附GRS证书|传说中大西洋人鱼的眼泪|深海之蓝绝美稀有'},
+];
+
+// ========== SVG Product Images ==========
+function getProductSVG(id, size){
+  const s=size||120; const h=s*1.3||160;
+  const svgs={
+    1:`<svg width="${s}" height="${h}" viewBox="0 0 120 160"><rect x="20" y="15" width="80" height="130" rx="10" fill="#2d2d2d"/><rect x="24" y="19" width="72" height="122" rx="9" fill="#1a1a1a"/><rect x="30" y="25" width="60" height="110" rx="6" fill="#0a0a0a"/><circle cx="60" cy="35" r="4" fill="#333"/><circle cx="60" cy="60" r="3" fill="#4a90d9"/><rect x="45" y="58" width="30" height="4" rx="2" fill="#4a90d9"/><circle cx="55" cy="70" r="3" fill="#ff6b35"/><circle cx="65" cy="70" r="3" fill="#2ed573"/><rect x="40" y="80" width="40" height="15" rx="3" fill="#2a2a2a"/></svg>`,
+    2:`<svg width="${s}" height="${s}" viewBox="0 0 140 130"><rect x="15" y="20" width="110" height="75" rx="6" fill="#b8b8c0"/><rect x="20" y="25" width="100" height="65" rx="4" fill="#2d2d3a"/><rect x="25" y="30" width="90" height="55" rx="3" fill="#1c1c28"/><rect x="30" y="35" width="80" height="45" rx="2" fill="#0f0f1a"/><circle cx="70" cy="57" r="5" fill="#1a1a2e"/><rect x="55" y="85" width="80" height="4" rx="2" fill="#d0d0d8"/></svg>`,
+    3:`<svg width="${s}" height="${h}" viewBox="0 0 120 140"><ellipse cx="60" cy="55" rx="55" ry="50" fill="#3a3a4a"/><rect x="25" y="30" width="70" height="65" rx="20" fill="#2a2a38"/><rect x="30" y="35" width="60" height="55" rx="16" fill="#1a1a28"/><circle cx="42" cy="62" r="18" fill="#2d2d3d"/><circle cx="78" cy="62" r="18" fill="#2d2d3d"/><circle cx="42" cy="62" r="12" fill="#3d3d4d"/><circle cx="78" cy="62" r="12" fill="#3d3d4d"/><rect x="45" y="88" width="30" height="6" rx="3" fill="#555"/></svg>`,
+    4:`<svg width="${s}" height="${h}" viewBox="0 0 100 140"><rect x="15" y="25" width="70" height="100" rx="16" fill="#c8b89a"/><circle cx="50" cy="70" r="32" fill="#f5f0e8"/><circle cx="50" cy="70" r="28" fill="#efe8d8"/><circle cx="50" cy="70" r="24" fill="#e8e0d0"/><line x1="50" y1="46" x2="50" y2="55" stroke="#333" stroke-width="2"/><line x1="50" y1="85" x2="50" y2="94" stroke="#333" stroke-width="2"/><line x1="26" y1="70" x2="35" y2="70" stroke="#333" stroke-width="2"/><line x1="65" y1="70" x2="74" y2="70" stroke="#333" stroke-width="2"/></svg>`,
+    5:`<svg width="${s+10}" height="${s-10}" viewBox="0 0 130 110"><ellipse cx="65" cy="88" rx="55" ry="15" fill="#ddd"/><path d="M20 85 Q25 35 50 25 L55 15 L60 10 L65 15 L70 10 L75 15 L80 25 Q105 35 110 85 Z" fill="#3a3a4a"/><path d="M30 85 Q35 45 55 35 L65 25 L75 35 Q95 45 100 85" fill="#4a4a5a"/></svg>`,
+    6:`<svg width="${s}" height="${h}" viewBox="0 0 110 130"><rect x="10" y="25" width="90" height="85" rx="10" fill="#8b6914"/><rect x="15" y="30" width="80" height="75" rx="8" fill="#a07828"/><rect x="20" y="50" width="70" height="45" rx="6" fill="#c4983a"/><rect x="25" y="35" width="60" height="8" rx="3" fill="#8b6914"/></svg>`,
+    7:`<svg width="${s}" height="${h}" viewBox="0 0 120 130"><rect x="15" y="20" width="90" height="65" rx="8" fill="#2a2a2a"/><rect x="20" y="25" width="80" height="55" rx="5" fill="#1a1a1a"/><circle cx="60" cy="52" r="22" fill="#222"/><circle cx="60" cy="52" r="18" fill="#333"/><circle cx="60" cy="52" r="10" fill="#1a1a1a"/><circle cx="60" cy="52" r="6" fill="#4a6090"/></svg>`,
+    8:`<svg width="${s-30}" height="${h}" viewBox="0 0 90 130"><rect x="10" y="10" width="70" height="100" rx="4" fill="#f5e6d0"/><rect x="14" y="14" width="62" height="92" rx="2" fill="#fff8f0"/><line x1="25" y1="30" x2="65" y2="30" stroke="#ddd" stroke-width="1.5"/><line x1="25" y1="40" x2="65" y2="40" stroke="#ddd" stroke-width="1.5"/><line x1="25" y1="50" x2="60" y2="50" stroke="#ddd" stroke-width="1.5"/><line x1="25" y1="60" x2="65" y2="60" stroke="#ddd" stroke-width="1.5"/><line x1="25" y1="70" x2="55" y2="70" stroke="#ddd" stroke-width="1.5"/><line x1="25" y1="80" x2="65" y2="80" stroke="#ddd" stroke-width="1.5"/></svg>`,
+    9:`<svg width="${s-50}" height="${h}" viewBox="0 0 70 140"><rect x="20" y="20" width="30" height="50" rx="15" fill="#f0d0a0"/><rect x="22" y="22" width="26" height="15" rx="8" fill="#ffd700"/><rect x="25" y="40" width="20" height="25" rx="5" fill="#e8c080"/><rect x="20" y="70" width="30" height="50" rx="8" fill="#f5e6d0"/><rect x="22" y="72" width="26" height="46" rx="6" fill="#fff8f0"/><text x="35" y="100" text-anchor="middle" font-size="18" fill="#c8a860">N°5</text></svg>`,
+    10:`<svg width="${s+10}" height="${s-40}" viewBox="0 0 130 80"><path d="M20 50 Q25 15 65 10 Q105 15 110 50" fill="#2a2a2a"/><path d="M25 50 Q30 20 65 15 Q100 20 105 50" fill="#1a1a1a"/><circle cx="50" cy="40" r="14" fill="#3a3a3a"/><circle cx="80" cy="40" r="14" fill="#3a3a3a"/><circle cx="50" cy="40" r="10" fill="#1a2a1a"/><circle cx="80" cy="40" r="10" fill="#1a2a1a"/><rect x="38" y="42" width="54" height="3" rx="1.5" fill="#333"/></svg>`,
+    11:`<svg width="${s-30}" height="${h+10}" viewBox="0 0 90 150"><path d="M45 15 L35 35 L20 130 L70 130 L55 35 Z" fill="#ff7eb3"/><path d="M45 15 L35 35 L55 35 Z" fill="#ff6ba0"/><circle cx="40" cy="55" r="3" fill="#fff" opacity="0.6"/><circle cx="48" cy="65" r="2.5" fill="#fff" opacity="0.6"/><circle cx="42" cy="75" r="3" fill="#fff" opacity="0.6"/><circle cx="50" cy="85" r="2" fill="#fff" opacity="0.6"/><circle cx="40" cy="95" r="3" fill="#fff" opacity="0.6"/></svg>`,
+    12:`<svg width="${s}" height="${h}" viewBox="0 0 120 140"><rect x="25" y="20" width="70" height="85" rx="10" fill="#f5f5f5"/><rect x="28" y="23" width="64" height="79" rx="8" fill="#1a1a2e"/><rect x="32" y="27" width="56" height="20" rx="4" fill="#0a0a1a"/><path d="M60 55 L70 75 L50 75 Z" fill="#0066cc"/><path d="M60 55 L50 75 L70 75 Z" fill="#ff3333"/><circle cx="60" cy="65" r="6" fill="#003399"/></svg>`,
+    13:`<svg width="${s-10}" height="${h}" viewBox="0 0 110 150"><rect x="15" y="10" width="80" height="120" rx="8" fill="#b0b0b8"/><rect x="19" y="14" width="72" height="112" rx="6" fill="#2d2d3a"/><rect x="23" y="18" width="64" height="104" rx="4" fill="#1c1c28"/><rect x="27" y="22" width="56" height="96" rx="3" fill="#0f0f1a"/><circle cx="55" cy="35" r="3" fill="#444"/><rect x="40" y="50" width="30" height="40" rx="3" fill="#1a1a2e"/></svg>`,
+    14:`<svg width="${s-30}" height="${h-20}" viewBox="0 0 90 120"><rect x="15" y="15" width="60" height="80" rx="20" fill="#f0f0f0"/><rect x="18" y="18" width="54" height="74" rx="18" fill="#e8e8e8"/><circle cx="35" cy="45" r="16" fill="#ddd"/><circle cx="55" cy="45" r="16" fill="#ddd"/><circle cx="35" cy="45" r="10" fill="#2a2a2a"/><circle cx="55" cy="45" r="10" fill="#2a2a2a"/><rect x="35" y="75" width="20" height="12" rx="6" fill="#ccc"/></svg>`,
+    15:`<svg width="${s+20}" height="${s-20}" viewBox="0 0 140 100"><rect x="10" y="10" width="120" height="65" rx="8" fill="#3a3a3a"/><rect x="14" y="14" width="112" height="57" rx="6" fill="#2a2a2a"/><rect x="18" y="18" width="20" height="20" rx="4" fill="#444"/><rect x="42" y="18" width="20" height="20" rx="4" fill="#444"/><rect x="66" y="18" width="20" height="20" rx="4" fill="#444"/><rect x="90" y="18" width="20" height="20" rx="4" fill="#444"/><rect x="18" y="42" width="20" height="20" rx="4" fill="#444"/><rect x="42" y="42" width="20" height="20" rx="4" fill="#444"/><rect x="66" y="42" width="44" height="20" rx="4" fill="#444"/></svg>`,
+    16:`<svg width="${s-10}" height="${h}" viewBox="0 0 110 140"><rect x="15" y="20" width="80" height="90" rx="10" fill="#4a4a4a"/><rect x="20" y="25" width="70" height="80" rx="8" fill="#333"/><rect x="25" y="30" width="60" height="70" rx="6" fill="#2a2a2a"/><circle cx="55" cy="55" r="20" fill="#222"/><circle cx="55" cy="55" r="14" fill="#1a1a1a"/><rect x="50" y="80" width="10" height="15" rx="3" fill="#555"/><circle cx="55" cy="55" r="6" fill="#4a3020"/></svg>`,
+    17:`<svg width="${s-20}" height="${h}" viewBox="0 0 100 150"><rect x="25" y="15" width="50" height="70" rx="25" fill="#ff6b35"/><rect x="28" y="20" width="44" height="35" rx="22" fill="#ff8c5a"/><circle cx="50" cy="40" r="10" fill="#e55a2b"/><rect x="30" y="85" width="40" height="40" rx="6" fill="#555"/><rect x="35" y="128" width="30" height="6" rx="3" fill="#888"/><line x1="50" y1="40" x2="50" y2="85" stroke="#666" stroke-width="3"/></svg>`,
+    18:`<svg width="${s+10}" height="${s}" viewBox="0 0 130 120"><polygon points="65,15 95,45 85,95 45,95 35,45" fill="#ffd700"/><polygon points="65,25 88,50 80,90 50,90 42,50" fill="#ffaa00"/><rect x="45" y="55" width="40" height="40" rx="6" fill="#1a1a2e"/><circle cx="58" cy="70" r="8" fill="#333"/><circle cx="72" cy="70" r="8" fill="#333"/><rect x="55" y="55" width="20" height="4" rx="2" fill="#ff6b35"/></svg>`,
+    19:`<svg width="${s-20}" height="${h-20}" viewBox="0 0 100 120"><rect x="20" y="15" width="60" height="80" rx="8" fill="#5a3e28"/><rect x="24" y="20" width="52" height="30" rx="6" fill="#8b6914"/><text x="50" y="40" text-anchor="middle" font-size="13" fill="#fff" font-weight="bold">COFFEE</text><rect x="24" y="55" width="52" height="35" rx="6" fill="#d4a840"/><circle cx="38" cy="68" r="6" fill="#fff" opacity="0.5"/><circle cx="50" cy="68" r="6" fill="#fff" opacity="0.5"/><circle cx="62" cy="68" r="6" fill="#fff" opacity="0.5"/></svg>`,
+    21:`<svg width="${s-30}" height="${h}" viewBox="0 0 80 140"><rect x="20" y="30" width="12" height="90" rx="6" fill="#aabbcc"/><rect x="34" y="30" width="12" height="90" rx="6" fill="#aabbcc"/><rect x="48" y="30" width="12" height="90" rx="6" fill="#aabbcc"/><rect x="18" y="25" width="44" height="14" rx="4" fill="#667788"/><text x="22" y="55" font-size="16" fill="#00d4ff" font-weight="bold">V</text></svg>`,
+    22:`<svg width="${s}" height="${h}" viewBox="0 0 130 140"><ellipse cx="65" cy="75" rx="45" ry="50" fill="#ffd966"/><ellipse cx="65" cy="78" rx="38" ry="42" fill="#ffe9a0"/><ellipse cx="52" cy="65" rx="14" ry="12" fill="#ffb833"/><ellipse cx="78" cy="65" rx="14" ry="12" fill="#ffb833"/><circle cx="48" cy="62" r="4" fill="#333"/><circle cx="74" cy="62" r="4" fill="#333"/><circle cx="52" cy="58" r="2" fill="#fff"/><circle cx="78" cy="58" r="2" fill="#fff"/><ellipse cx="65" cy="78" rx="8" ry="5" fill="#ff9933"/><path d="M65 83 Q60 90 55 88" stroke="#333" stroke-width="1.5" fill="none"/><path d="M65 83 Q70 90 75 88" stroke="#333" stroke-width="1.5" fill="none"/><ellipse cx="45" cy="50" rx="12" ry="8" fill="#ffd966"/><ellipse cx="85" cy="50" rx="12" ry="8" fill="#ffd966"/></svg>`,
+    23:`<svg width="${s-20}" height="${h-10}" viewBox="0 0 90 130"><rect x="20" y="15" width="50" height="90" rx="8" fill="#e8e0d0"/><rect x="23" y="18" width="44" height="84" rx="6" fill="#f5efe8"/><ellipse cx="45" cy="55" rx="18" ry="22" fill="#ffd966"/><ellipse cx="45" cy="58" rx="14" ry="17" fill="#ffe9a0"/><ellipse cx="38" cy="50" rx="6" ry="5" fill="#ffb833"/><ellipse cx="52" cy="50" rx="6" ry="5" fill="#ffb833"/><circle cx="36" cy="48" r="2" fill="#333"/><circle cx="50" cy="48" r="2" fill="#333"/><ellipse cx="45" cy="60" rx="4" ry="3" fill="#ff9933"/><rect x="35" y="105" width="20" height="6" rx="3" fill="#ccc"/></svg>`,
+    24:`<svg width="${s}" height="${h-10}" viewBox="0 0 120 130"><rect x="10" y="20" width="100" height="70" rx="8" fill="#1a3a5c"/><rect x="15" y="25" width="90" height="60" rx="5" fill="#0d2840"/><text x="60" y="45" text-anchor="middle" font-size="22" fill="#fff" font-weight="900">腾讯</text><text x="60" y="65" text-anchor="middle" font-size="14" fill="#4dc9f6">00700.HK</text><polyline points="25,80 35,60 45,75 55,50 65,65 75,45 85,55 95,35" stroke="#2ed573" stroke-width="2" fill="none"/><text x="60" y="105" text-anchor="middle" font-size="16" fill="#2ed573" font-weight="bold">+3.62%</text></svg>`,
+    25:`<svg width="${s}" height="${s-10}" viewBox="0 0 140 120"><rect x="15" y="10" width="110" height="75" rx="6" fill="#b0b0b8"/><rect x="20" y="15" width="100" height="65" rx="4" fill="#2d2d3a"/><rect x="25" y="20" width="90" height="55" rx="3" fill="#1c1c28"/><rect x="30" y="25" width="80" height="45" rx="2" fill="#0f0f1a"/><circle cx="70" cy="47" r="8" fill="#1a3a5c"/><text x="70" y="50" text-anchor="middle" font-size="8" fill="#fff">H</text><rect x="55" y="88" width="80" height="4" rx="2" fill="#d0d0d8"/></svg>`,
+    26:`<svg width="${s-30}" height="${h}" viewBox="0 0 80 150"><rect x="20" y="20" width="40" height="100" rx="10" fill="#f5f0e8"/><rect x="23" y="23" width="34" height="94" rx="8" fill="#fff"/><rect x="23" y="25" width="34" height="35" rx="6" fill="#c41e3a"/><text x="40" y="48" text-anchor="middle" font-size="14" fill="#ffd700" font-weight="bold">茅台</text><rect x="23" y="65" width="34" height="45" rx="4" fill="#faf0e0"/><circle cx="40" cy="85" r="12" fill="#ddc8a0"/><text x="40" y="115" text-anchor="middle" font-size="10" fill="#c41e3a">53%vol</text></svg>`,
+    27:`<svg width="${s-15}" height="${h-20}" viewBox="0 0 100 120"><ellipse cx="50" cy="60" rx="30" ry="38" fill="#e8e8f0"/><ellipse cx="50" cy="65" rx="24" ry="30" fill="#fff"/><ellipse cx="42" cy="52" rx="8" ry="9" fill="#222"/><ellipse cx="58" cy="52" rx="8" ry="9" fill="#222"/><circle cx="40" cy="50" r="3" fill="#fff"/><circle cx="56" cy="50" r="3" fill="#fff"/><ellipse cx="50" cy="68" rx="5" ry="4" fill="#ff6b6b"/><ellipse cx="50" cy="62" rx="6" ry="4" fill="#333"/><ellipse cx="38" cy="42" rx="6" ry="5" fill="#333"/><ellipse cx="62" cy="42" rx="6" ry="5" fill="#333"/><rect x="35" y="100" width="30" height="8" rx="4" fill="#88ccee"/><circle cx="40" cy="72" r="2" fill="#fff" opacity="0.6"/><circle cx="55" cy="75" r="1.5" fill="#fff" opacity="0.6"/></svg>`,
+    28:`<svg width="${s+5}" height="${s-15}" viewBox="0 0 130 110"><rect x="10" y="15" width="110" height="55" rx="10" fill="#1a6bff"/><rect x="15" y="20" width="100" height="45" rx="8" fill="#3380ff"/><path d="M45 20 L50 10 L80 10 L85 20" fill="#1a6bff"/><circle cx="40" cy="42" r="12" fill="#111"/><circle cx="40" cy="42" r="8" fill="#222"/><circle cx="90" cy="42" r="12" fill="#111"/><circle cx="90" cy="42" r="8" fill="#222"/><rect x="55" y="35" width="20" height="14" rx="4" fill="#0a0a1a"/><rect x="15" y="72" width="100" height="5" rx="2" fill="#ddd"/></svg>`,
+    20:`<svg width="${s-10}" height="${h-20}" viewBox="0 0 110 120"><rect x="15" y="15" width="80" height="85" rx="12" fill="#d4953a"/><rect x="19" y="20" width="72" height="20" rx="4" fill="#f5a623"/><text x="55" y="35" text-anchor="middle" font-size="12" fill="#fff" font-weight="bold">脐橙</text><circle cx="35" cy="55" r="15" fill="#ff8c00"/><circle cx="55" cy="52" r="17" fill="#ffa500"/><circle cx="75" cy="56" r="14" fill="#ff8c00"/><circle cx="45" cy="50" r="16" fill="#ffa500"/><circle cx="65" cy="54" r="15" fill="#ff8c00"/></svg>`,
+    29:`<svg width="${s-10}" height="${h}" viewBox="0 0 100 150"><rect x="30" y="20" width="40" height="110" rx="6" fill="#4a5a3a"/><rect x="33" y="25" width="34" height="45" rx="4" fill="#d4a860"/><circle cx="50" cy="42" r="10" fill="#f5d0a0"/><circle cx="50" cy="55" r="3" fill="#333"/><rect x="36" y="70" width="28" height="50" rx="4" fill="#3a4a2a"/><rect x="38" y="74" width="24" height="18" rx="3" fill="#2a3a1a"/><rect x="38" y="96" width="24" height="18" rx="3" fill="#2a3a1a"/><rect x="40" y="112" width="20" height="10" rx="3" fill="#1a2a0a"/><text x="50" y="128" text-anchor="middle" font-size="8" fill="#ffd700" font-weight="bold">DELTA</text></svg>`,
+    30:`<svg width="${s-10}" height="${h-30}" viewBox="0 0 100 120"><rect x="15" y="10" width="70" height="95" rx="8" fill="#2d2d3a"/><rect x="19" y="14" width="62" height="87" rx="6" fill="#1a1a28"/><circle cx="35" cy="40" r="16" fill="#ffd700"/><circle cx="35" cy="40" r="12" fill="#ffaa00"/><text x="35" y="44" text-anchor="middle" font-size="8" fill="#333" font-weight="bold">D</text><circle cx="65" cy="40" r="16" fill="#c0c0c0"/><circle cx="65" cy="40" r="12" fill="#999"/><text x="65" y="44" text-anchor="middle" font-size="8" fill="#333" font-weight="bold">F</text><circle cx="35" cy="78" r="14" fill="#ff4444"/><circle cx="35" cy="78" r="10" fill="#cc0000"/><circle cx="65" cy="78" r="14" fill="#44aaff"/><circle cx="65" cy="78" r="10" fill="#0066cc"/><rect x="32" y="105" width="6" height="10" rx="2" fill="#555"/><rect x="62" y="105" width="6" height="10" rx="2" fill="#555"/></svg>`,
+    31:`<svg width="${s}" height="${h}" viewBox="0 0 120 150"><rect x="15" y="15" width="90" height="115" rx="10" fill="#3a4a2a"/><rect x="20" y="20" width="80" height="105" rx="8" fill="#2d3a1d"/><rect x="25" y="25" width="70" height="95" rx="6" fill="#4a5a3a"/><rect x="30" y="30" width="60" height="40" rx="4" fill="#1a2a0a"/><rect x="35" y="35" width="50" height="30" rx="3" fill="#2a3a1a"/><text x="60" y="55" text-anchor="middle" font-size="10" fill="#ffd700" font-weight="bold">Δ</text><rect x="30" y="78" width="60" height="4" rx="2" fill="#1a2a0a"/><rect x="30" y="86" width="60" height="4" rx="2" fill="#1a2a0a"/><rect x="30" y="94" width="60" height="4" rx="2" fill="#1a2a0a"/><rect x="30" y="102" width="60" height="4" rx="2" fill="#1a2a0a"/><rect x="30" y="110" width="40" height="4" rx="2" fill="#ffd700"/></svg>`,
+    32:`<svg width="${s-20}" height="${h}" viewBox="0 0 90 140"><rect x="10" y="8" width="70" height="110" rx="5" fill="#1a1a2e"/><rect x="14" y="12" width="62" height="102" rx="3" fill="#0d0d20"/><rect x="18" y="16" width="54" height="94" rx="2" fill="#151530"/><text x="45" y="45" text-anchor="middle" font-size="16" fill="#ffd700" font-weight="900">DELTA</text><text x="45" y="62" text-anchor="middle" font-size="9" fill="#ccc">FORCE</text><line x1="22" y1="70" x2="68" y2="70" stroke="#ffd700" stroke-width="0.5"/><rect x="22" y="78" width="46" height="2" rx="1" fill="#555"/><rect x="22" y="84" width="46" height="2" rx="1" fill="#555"/><rect x="22" y="90" width="36" height="2" rx="1" fill="#555"/><rect x="22" y="96" width="46" height="2" rx="1" fill="#555"/><rect x="22" y="102" width="28" height="2" rx="1" fill="#555"/></svg>`,
+    33:`<svg width="${s+10}" height="${s-10}" viewBox="0 0 140 120"><rect x="5" y="10" width="130" height="95" rx="6" fill="#1a1a2e"/><rect x="8" y="13" width="124" height="89" rx="4" fill="#0f0f20"/><line x1="8" y1="19" x2="132" y2="19" stroke="#ff3333" stroke-width="3" opacity="0.9"/><line x1="8" y1="27" x2="132" y2="27" stroke="#33ff33" stroke-width="3" opacity="0.9"/><line x1="8" y1="35" x2="132" y2="35" stroke="#3333ff" stroke-width="3" opacity="0.9"/><text x="70" y="65" text-anchor="middle" font-size="22" fill="#ffd700" font-weight="900">Δ</text><text x="70" y="82" text-anchor="middle" font-size="9" fill="#aaa" letter-spacing="4">DELTA</text><circle cx="20" cy="100" r="3" fill="#333"/><circle cx="120" cy="100" r="3" fill="#333"/></svg>`,
+    34:`<svg width="${s-20}" height="${h}" viewBox="0 0 90 140"><rect x="20" y="15" width="50" height="80" rx="8" fill="#f0e8d8"/><rect x="23" y="18" width="44" height="74" rx="6" fill="#fff8f0"/><polygon points="45,30 52,45 68,47 56,58 59,74 45,66 31,74 34,58 22,47 38,45" fill="#ff1a3a"/><polygon points="45,34 49,44 60,45 52,53 54,65 45,60 36,65 38,53 30,45 41,44" fill="#ff3355"/><circle cx="45" cy="46" r="4" fill="#ff6677"/><rect x="40" y="95" width="10" height="15" rx="3" fill="#e8d8c0"/></svg>`,
+    35:`<svg width="${s-20}" height="${h}" viewBox="0 0 90 140"><rect x="20" y="15" width="50" height="80" rx="8" fill="#e8f0f8"/><rect x="23" y="18" width="44" height="74" rx="6" fill="#f0f8ff"/><path d="M45 28 L45 32 Q30 30 28 48 Q26 66 45 72 Q64 66 62 48 Q60 30 45 32 Z" fill="#1a6bff"/><path d="M45 33 L45 36 Q34 34 33 47 Q32 60 45 65 Q58 60 57 47 Q56 34 45 36 Z" fill="#3388ff"/><ellipse cx="45" cy="48" rx="5" ry="8" fill="#66aaff" opacity="0.7"/><rect x="40" y="95" width="10" height="15" rx="3" fill="#d8e0e8"/></svg>`,
+  };
+  return svgs[id]||`<svg width="${s}" height="${s}" viewBox="0 0 100 100"><rect width="100" height="100" rx="10" fill="var(--bg-secondary)"/><text x="50" y="55" text-anchor="middle" font-size="30">📦</text></svg>`;
+}
+
+// ========== Vue Components ==========
+
+// -- HomePage --
+// 读取后端错误体里的 message
+async function apiErrorMessage(res, fallback){
+  let msg='';
+  try{
+    const data=await res.json();
+    msg=data&&(data.message||data.error)||'';
+  }catch(e){ /* 非 JSON 错误体 */ }
+  return msg||fallback||('请求失败喵（'+res.status+'）');
+}
+
+const HomePage = {
+  props: ['cart','products'],
+  emits: ['add-cart'],
+  template: `
+  <div class="main-content">
+    <!-- Carousel -->
+    <div class="carousel-wrapper">
+      <van-swipe ref="swipeRef" :autoplay="3000" indicator-color="var(--accent)" lazy-render @change="onSwipeChange">
+        <van-swipe-item v-for="(slide,i) in carouselSlides" :key="i">
+          <div :class="['carousel-slide','slide'+(i+1)]" @click="goProducts(slide.cat)" style="cursor:pointer">
+            <div class="carousel-text">
+              <h3>{{slide.title}}</h3>
+              <p>{{slide.desc}}</p>
+              <button class="carousel-btn" @click.stop="goProducts(slide.cat)">{{slide.btn}}</button>
+            </div>
+            <div class="carousel-img" v-html="slide.svg"></div>
+          </div>
+        </van-swipe-item>
+      </van-swipe>
+      <button class="carousel-arrow carousel-arrow-left" @click.stop="swipePrev" title="上一张">‹</button>
+      <button class="carousel-arrow carousel-arrow-right" @click.stop="swipeNext" title="下一张">›</button>
+    </div>
+
+    <!-- Flash Deals -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-title">⚡ 限时秒杀</div>
+        <div style="font-size:14px;color:var(--text-muted)">
+          距结束 {{cd.h}}:{{cd.m}}:{{cd.s}}
+        </div>
+      </div>
+      <div class="product-grid">
+        <div v-for="p in flashProducts" :key="p.id" class="product-card" @click="goDetail(p.id)">
+          <div class="product-card-img">
+            <img v-if="p.image" :src="p.image" @error="p.image=''" loading="lazy" class="product-photo" alt="">
+            <span v-else v-html="getProductSVG(p.id,110)"></span>
+            <span class="product-tag hot" v-if="p.tag">🔥热卖</span>
+          </div>
+          <div class="product-card-info">
+            <div class="product-card-name">{{p.name}}</div>
+            <div class="product-card-price">
+              <span class="current">¥{{p.flashPrice}}</span>
+              <span class="original">¥{{p.price}}</span>
+            </div>
+            <div class="product-card-meta">
+              <span class="product-rating">★ {{p.rating}}</span>
+              <span>已售{{formatSold(p.sold)}}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- All Products -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-title">🛍️ 精选好物</div>
+        <a class="section-more" @click="goProducts('all')">查看全部 →</a>
+      </div>
+      <div class="product-grid">
+        <div v-for="p in displayProducts" :key="p.id" class="product-card" @click="goDetail(p.id)">
+          <div class="product-card-img">
+            <img v-if="p.image" :src="p.image" @error="p.image=''" loading="lazy" class="product-photo" alt="">
+            <span v-else v-html="getProductSVG(p.id,110)"></span>
+            <span class="product-tag hot" v-if="p.tag==='hot'">🔥热卖</span>
+            <span class="product-tag new" v-if="p.tag==='new'">✨新品</span>
+          </div>
+          <div class="product-card-info">
+            <div class="product-card-name">{{p.name}}</div>
+            <div class="product-card-price">
+              <span class="current">¥{{p.price}}</span>
+              <span class="original" v-if="p.original>p.price">¥{{p.original}}</span>
+            </div>
+            <div class="product-card-meta">
+              <span class="product-rating">★ {{p.rating}}</span>
+              <span>已售{{formatSold(p.sold)}}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Brands -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-title">🏷️ 热门品牌</div>
+      </div>
+      <div class="brand-row">
+        <span class="brand-item">🍎 Apple</span>
+        <span class="brand-item">🎧 Sony</span>
+        <span class="brand-item">👟 Nike</span>
+        <span class="brand-item">💄 Chanel</span>
+        <span class="brand-item">📷 Canon</span>
+        <span class="brand-item">🎮 PlayStation</span>
+      </div>
+    </div>
+  </div>`,
+  data(){ return { cd:{h:'00',m:'00',s:'00'}, timer:null, currentSwipe:0 }; },
+  computed: {
+    flashProducts(){
+      return this.products.filter(p=>p.tag==='hot').slice(0,4).map(p=>({...p,flashPrice:Math.floor(p.price*0.75)}));
+    },
+    displayProducts(){ return this.products; },
+    carouselSlides(){
+      return [
+        {title:'618年中大促\n狂欢购物节',desc:'全场低至5折 · 跨店满300减50 · 限时抢购',btn:'立即抢购 →',cat:'all',svg:'<svg width="200" height="200" viewBox="0 0 240 240"><defs><linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#ff6b35"/><stop offset="100%" style="stop-color:#ff4757"/></linearGradient></defs><rect x="60" y="40" width="120" height="150" rx="12" fill="url(#g1)" opacity="0.9"/><line x1="120" y1="40" x2="120" y2="190" stroke="#fff" stroke-width="2" opacity="0.5"/><line x1="60" y1="115" x2="180" y2="115" stroke="#fff" stroke-width="2" opacity="0.5"/><circle cx="120" cy="115" r="30" fill="none" stroke="#fff" stroke-width="3" opacity="0.7"/><path d="M120 85 L135 105 L120 95 L105 105 Z" fill="#fff" opacity="0.8"/><text x="120" y="220" text-anchor="middle" fill="#ff6b35" font-size="18" font-weight="900">618</text></svg>'},
+        {title:'数码焕新季\n爆款直降',desc:'手机电脑耳机 · 全场低至5折 · 早买早享受',btn:'逛数码 →',cat:'digital',svg:'<svg width="200" height="200" viewBox="0 0 240 240"><rect x="50" y="30" width="140" height="170" rx="16" fill="#2d2d3a"/><rect x="56" y="36" width="128" height="158" rx="12" fill="#1c1c28"/><rect x="62" y="42" width="116" height="146" rx="8" fill="#0f0f1a"/><circle cx="120" cy="60" r="6" fill="#333"/><rect x="85" y="95" width="70" height="55" rx="6" fill="#1a1a2e"/><circle cx="120" cy="122" r="18" fill="#2a2a4a"/><text x="120" y="215" text-anchor="middle" fill="#ff6b35" font-size="18" font-weight="900">数码</text></svg>'},
+        {title:'夏日美妆节\n精致生活',desc:'大牌美妆满199减60 · 防晒专场 · 限时特惠',btn:'逛美妆 →',cat:'fashion',svg:'<svg width="200" height="200" viewBox="0 0 240 240"><rect x="85" y="20" width="70" height="100" rx="35" fill="#ffd0d0"/><rect x="90" y="25" width="60" height="50" rx="30" fill="#ffb0b0"/><circle cx="120" cy="55" r="12" fill="#ff6b6b"/><rect x="85" y="75" width="70" height="40" rx="8" fill="#ffc0c0"/><line x1="70" y1="20" x2="70" y2="120" stroke="#ff9e9e" stroke-width="3"/><circle cx="70" cy="120" r="6" fill="#ff6b6b"/><text x="120" y="215" text-anchor="middle" fill="#ff6b35" font-size="18" font-weight="900">美妆</text></svg>'},
+        {title:'运动焕新\n活力无限',desc:'运动装备满400减80 · 新品首发 · 跑出健康',btn:'逛运动 →',cat:'sports',svg:'<svg width="200" height="200" viewBox="0 0 240 240"><ellipse cx="120" cy="150" rx="80" ry="20" fill="#ddd"/><path d="M50 150 Q55 60 90 40 L100 25 L105 15 L110 25 L115 15 L120 25 L125 40 Q160 60 165 150 Z" fill="#3a3a4a"/><path d="M65 150 Q70 75 100 55 L110 40 L115 35 L120 25" fill="#4a4a5a"/><path d="M175 150 Q170 75 140 55 L130 40" fill="#4a4a5a"/><text x="120" y="220" text-anchor="middle" fill="#ff6b35" font-size="18" font-weight="900">运动</text></svg>'},
+      ];
+    }
+  },
+  methods: {
+    goDetail(id){this.$router.push('/product/'+id);},
+    goProducts(cat){this.$router.push('/products'+(cat&&cat!=='all'?'?cat='+cat:''));},
+    swipePrev(){this.$refs.swipeRef.prev();},
+    swipeNext(){this.$refs.swipeRef.next();},
+    onSwipeChange(idx){this.currentSwipe=idx;},
+    tick(){
+      const end=new Date();end.setHours(23,59,59,999);
+      let d=Math.max(0,Math.floor((end-new Date())/1000));
+      this.cd.h=String(Math.floor(d/3600)).padStart(2,'0');d%=3600;
+      this.cd.m=String(Math.floor(d/60)).padStart(2,'0');d%=60;
+      this.cd.s=String(d).padStart(2,'0');
+    }
+  },
+  mounted(){this.tick();this.timer=setInterval(this.tick,1000);},
+  beforeUnmount(){clearInterval(this.timer);}
+};
+
+// -- CouponPage --
+const couponTemplates = [
+  {id:'c1',amount:50,condition:'满299可用',name:'新人专享券',desc:'全场通用，新用户专享',expire:'领取后7天内有效'},
+  {id:'c2',amount:100,condition:'满499可用',name:'数码品类券',desc:'数码电子类商品专用',expire:'领取后3天内有效'},
+  {id:'c3',amount:30,condition:'无门槛',name:'每日签到券',desc:'全场通用，每日限量1000张',expire:'当日有效'},
+  {id:'c4',amount:200,condition:'满999可用',name:'618大促神券',desc:'618活动期间全场通用',expire:'2026.06.18前有效'},
+  {id:'c5',amount:15,condition:'无门槛',name:'运费补贴券',desc:'抵扣首重运费',expire:'领取后30天内有效'},
+  {id:'c6',amount:80,condition:'满399可用',name:'服饰美妆券',desc:'服饰美妆类商品专用',expire:'领取后7天内有效'},
+  {id:'c7',amount:300,condition:'满1999可用',name:'高端家电券',desc:'家电家居类商品专用',expire:'领取后15天内有效'},
+  {id:'c8',amount:60,condition:'满299可用',name:'吃货福利券',desc:'食品生鲜类商品专用',expire:'领取后5天内有效'},
+];
+const CouponPage = {
+  props: ['cart','products'],
+  emits: ['add-cart'],
+  template: `
+  <div class="main-content">
+    <div class="page-title">🎫 领券中心</div>
+    <p class="page-subtitle">每天限量发放，先到先得！已领优惠券可在结算时使用</p>
+    <div class="coupon-grid">
+      <div v-for="c in couponTemplates" :key="c.id" class="coupon-card" :class="{claimed:isClaimed(c.id)}">
+        <div class="coupon-left">
+          <div class="coupon-amount"><small>¥</small>{{c.amount}}</div>
+          <div class="coupon-condition">{{c.condition}}</div>
+        </div>
+        <div class="coupon-right">
+          <div class="coupon-name">{{c.name}}</div>
+          <div class="coupon-desc">{{c.desc}}</div>
+          <div class="coupon-expire">⏰ {{c.expire}}</div>
+          <button class="coupon-claim-btn" :disabled="isClaimed(c.id)" @click="$root.claimCoupon(c.id)">
+            {{isClaimed(c.id)?'已领取':'立即领取'}}
+          </button>
+        </div>
+        <div class="coupon-dots"><span class="coupon-dot"></span><span class="coupon-dot"></span><span class="coupon-dot"></span></div>
+      </div>
+    </div>
+  </div>`,
+  data(){ return {couponTemplates}; },
+  methods: {
+    isClaimed(id){return (this.$root.$data.coupons||[]).includes(id);}
+  }
+};
+
+// -- OrdersPage --
+const OrdersPage = {
+  props: ['cart','products'],
+  emits: ['add-cart'],
+  template: `
+  <div class="main-content">
+    <div class="page-title">📋 我的订单</div>
+    <div class="order-tabs">
+      <button v-for="t in tabs" :key="t.key" class="order-tab" :class="{active:activeTab===t.key}" @click="activeTab=t.key">{{t.label}}<span v-if="t.key==='all'&&orders.length"> ({{orders.length}})</span></button>
+    </div>
+
+    <!-- Order Cards -->
+    <div v-if="filteredOrders.length===0" class="order-empty">
+      <p style="font-size:60px">📭</p><p>暂无相关订单</p>
+      <router-link to="/" style="color:var(--accent)">去逛逛 →</router-link>
+    </div>
+    <div v-for="order in filteredOrders" :key="order.id" class="order-card">
+      <div class="order-card-header">
+        <span class="order-id">订单号：{{order.id}}</span>
+        <span class="order-status" :class="order.status">{{statusLabel(order.status)}}</span>
+      </div>
+      <div class="order-items">
+        <div v-for="item in order.items" :key="item.id" class="order-item">
+          <div class="order-item-img">
+            <img v-if="getProductImage(item.id)" :src="getProductImage(item.id)" @error="onImageError(item.id)" loading="lazy" class="product-photo" alt="">
+            <span v-else v-html="getProductSVG(item.id,44)"></span>
+          </div>
+          <div class="order-item-info">
+            <div class="order-item-name">{{getProductName(item.id)}}</div>
+            <div class="order-item-price">¥{{getProductPrice(item.id)}} ×{{item.qty}}</div>
+          </div>
+        </div>
+      </div>
+      <div class="order-card-footer">
+        <div class="order-total">
+          <span>{{order.date}}</span>
+          <span style="margin-left:16px">合计 <b>¥{{order.total}}</b></span>
+        </div>
+        <div class="order-actions">
+          <button class="order-btn" @click="openTracking(order)">📦 物流</button>
+          <button v-if="order.status==='delivered'" class="order-btn primary" @click="$root.confirmReceive(order.id)">✅ 确认收货</button>
+          <button v-if="order.status==='delivered'||order.status==='received'" class="order-btn danger" @click="$root.requestReturn(order.id)">↩️ 退货退款</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tracking Modal -->
+    <div class="tracking-overlay" :class="{open:trackingOrder}" @click.self="trackingOrder=null">
+      <div class="tracking-modal" v-if="trackingOrder">
+        <button class="tracking-close" @click="trackingOrder=null">✕</button>
+        <h3>📦 物流详情</h3>
+        <p style="font-size:12px;color:var(--text-muted);margin-bottom:14px">订单号：{{trackingOrder.id}} | 状态：{{statusLabel(trackingOrder.status)}}</p>
+        <div class="tracking-steps">
+          <div v-for="(step,i) in trackingOrder.tracking" :key="i" class="tracking-step" :class="{active:i===trackingOrder.tracking.length-1}">
+            <div class="step-time">{{step.time}}</div>
+            <div class="step-desc">{{step.desc}}</div>
+          </div>
+        </div>
+        <div class="tracking-actions">
+          <button v-if="trackingOrder.status==='delivered'" class="order-btn primary" @click="$root.confirmReceive(trackingOrder.id);trackingOrder.status='received'">✅ 确认收货</button>
+          <button v-if="trackingOrder.status==='delivered'||trackingOrder.status==='received'" class="order-btn danger" @click="$root.requestReturn(trackingOrder.id)">↩️ 申请退货退款</button>
+          <button class="order-btn" @click="trackingOrder=null">关闭</button>
+        </div>
+      </div>
+    </div>
+  </div>`,
+  data(){
+    return {
+      activeTab:'all',
+      trackingOrder:null,
+      tabs:[
+        {key:'all',label:'全部'},
+        {key:'shipping',label:'配送中'},
+        {key:'delivered',label:'已送达'},
+        {key:'received',label:'已收货'},
+        {key:'returning',label:'退货/退款'},
+      ]
+    };
+  },
+  computed:{
+    orders(){return this.$root.$data.orders||[];},
+    filteredOrders(){
+      if(this.activeTab==='all')return this.orders;
+      return this.orders.filter(o=>o.status===this.activeTab);
+    }
+  },
+  methods:{
+    getProductName(id){const p=this.products.find(pp=>pp.id===id);return p?p.name:'';},
+    getProductPrice(id){const p=this.products.find(pp=>pp.id===id);return p?p.price:0;},
+    statusLabel(s){
+      const map={shipping:'🚚 配送中',delivered:'📬 已送达',received:'✅ 已收货',returning:'↩️ 退货中',refunded:'💰 已退款'};
+      return map[s]||s;
+    },
+    openTracking(order){this.trackingOrder=order;}
+  }
+};
+
+// -- LoginPage --
+const LoginPage = {
+  props: ['cart','products'],
+  emits: ['add-cart'],
+  template: `
+  <div class="main-content">
+    <div class="auth-page">
+      <h2>👤 登录账号</h2>
+      <p class="auth-subtitle">欢迎回到提丰购物，请登录您的账号</p>
+      <div class="auth-input-group">
+        <label>用户名</label>
+        <input type="text" v-model="username" placeholder="请输入用户名" autocomplete="username">
+      </div>
+      <div class="auth-input-group">
+        <label>密码</label>
+        <input type="password" v-model="password" placeholder="请输入密码" autocomplete="current-password" @keyup.enter="handleLogin">
+      </div>
+      <div class="auth-error" :class="{show:!!error}">{{ error }}</div>
+      <button class="auth-submit-btn" :disabled="loading" @click="handleLogin">{{ loading ? '登录中…' : '登 录' }}</button>
+      <div class="cat-paw-divider">
+        <span class="cat-paw-line"></span>
+        <button class="cat-paw-btn" @click="openCatPaw" title="喵~ 跳转到提丰智能助手">🐾</button>
+        <span class="cat-paw-line"></span>
+      </div>
+      <p class="auth-switch-text">还没有账号？<router-link to="/register">立即注册 →</router-link></p>
+    </div>
+  </div>`,
+  data(){return{username:'',password:'',error:'',loading:false};},
+  methods: {
+    async handleLogin(){
+      this.error='';
+      if(!this.username.trim()||!this.password){this.error='请填写用户名和密码喵';return;}
+      this.loading=true;
+      try{
+        const res=await fetch('/api/auth/login',{
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({username:this.username.trim(),password:this.password})
+        });
+        const data=await res.json().catch(()=>null);
+        if(!res.ok){
+          throw new Error((data&&data.message)||(res.status===401?'用户名或密码不对喵':'登录失败喵'));
+        }
+        this.$root.setUser(data.user||data);
+        location.href=location.pathname+'#/';
+        location.reload();
+      }catch(e){
+        this.error=e.message;
+        this.loading=false;
+      }
+    },
+    async openCatPaw(){
+      this.$root.showToast('正在回到提丰会话 🐾');
+      setTimeout(()=>{ window.location.href = '/index.html'; }, 350);
+    }
+  }
+};
+
+// -- RegisterPage --
+const RegisterPage = {
+  props: ['cart','products'],
+  emits: ['add-cart'],
+  template: `
+  <div class="main-content">
+    <div class="auth-page">
+      <h2>📝 注册账号</h2>
+      <p class="auth-subtitle">加入提丰购物，发现更多好物</p>
+      <div class="auth-input-group">
+        <label>用户名</label>
+        <input type="text" v-model="username" placeholder="请输入用户名" autocomplete="username">
+      </div>
+      <div class="auth-input-group">
+        <label>昵称</label>
+        <input type="text" v-model="nickname" placeholder="提丰该怎么称呼你喵">
+      </div>
+      <div class="auth-input-group">
+        <label>手机号（选填）</label>
+        <input type="tel" v-model="phone" placeholder="方便找回账号">
+      </div>
+      <div class="auth-input-group">
+        <label>密码</label>
+        <input type="password" v-model="password" placeholder="请设置密码（至少6位）" autocomplete="new-password">
+      </div>
+      <div class="auth-input-group">
+        <label>确认密码</label>
+        <input type="password" v-model="password2" placeholder="请再次输入密码" autocomplete="new-password" @keyup.enter="handleRegister">
+      </div>
+      <div class="auth-error" :class="{show:!!error}">{{ error }}</div>
+      <button class="auth-submit-btn" :disabled="loading" @click="handleRegister">{{ loading ? '注册中…' : '注 册' }}</button>
+      <p class="auth-switch-text">已有账号？<router-link to="/login">去登录 →</router-link></p>
+    </div>
+  </div>`,
+  data(){return{username:'',nickname:'',phone:'',password:'',password2:'',error:'',loading:false};},
+  methods: {
+    async handleRegister(){
+      this.error='';
+      if(!this.username.trim()||!this.password||!this.nickname.trim()){
+        this.error='用户名、密码、昵称都要填喵';return;
+      }
+      if(this.password!==this.password2){this.error='两次密码不一致喵';return;}
+      if(this.password.length<6){this.error='密码至少6位喵';return;}
+      this.loading=true;
+      try{
+        const payload={username:this.username.trim(),password:this.password,nickname:this.nickname.trim()};
+        if(this.phone.trim())payload.phone=this.phone.trim();
+        const res=await fetch('/api/auth/register',{
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body:JSON.stringify(payload)
+        });
+        const data=await res.json().catch(()=>null);
+        if(!res.ok){
+          throw new Error((data&&data.message)||(res.status===409?'这个用户名已经有人用喵':'注册失败喵'));
+        }
+        this.$root.setUser(data.user||data);
+        location.href=location.pathname+'#/';
+        location.reload();
+      }catch(e){
+        this.error=e.message;
+        this.loading=false;
+      }
+    }
+  }
+};
+
+// -- ProductListPage --
+const ProductListPage = {
+  props: ['cart','products'],
+  emits: ['add-cart'],
+  template: `
+  <div class="main-content">
+    <div class="page-title">🛍️ 商品列表</div>
+    <div class="list-toolbar">
+      <div class="list-count">共 <b>{{filteredProducts.length}}</b> 件商品</div>
+      <div class="list-sort">
+        <button class="sort-btn" :class="{active:sortBy==='default'}" @click="sortBy='default'">默认</button>
+        <button class="sort-btn" :class="{active:sortBy==='price-asc'}" @click="sortBy='price-asc'">价格↑</button>
+        <button class="sort-btn" :class="{active:sortBy==='price-desc'}" @click="sortBy='price-desc'">价格↓</button>
+        <button class="sort-btn" :class="{active:sortBy==='sales'}" @click="sortBy='sales'">销量</button>
+      </div>
+    </div>
+    <div class="product-grid">
+      <div v-for="p in sortedProducts" :key="p.id" class="product-card" @click="goDetail(p.id)">
+        <div class="product-card-img">
+          <img v-if="p.image" :src="p.image" @error="p.image=''" loading="lazy" class="product-photo" alt="">
+          <span v-else v-html="getProductSVG(p.id,110)"></span>
+          <span class="product-tag hot" v-if="p.tag==='hot'">🔥热卖</span>
+          <span class="product-tag new" v-if="p.tag==='new'">✨新品</span>
+        </div>
+        <div class="product-card-info">
+          <div class="product-card-name">{{p.name}}</div>
+          <div class="product-card-price">
+            <span class="current">¥{{p.price}}</span>
+            <span class="original" v-if="p.original>p.price">¥{{p.original}}</span>
+          </div>
+          <div class="product-card-meta">
+            <span class="product-rating">★ {{p.rating}}</span>
+            <span>已售{{formatSold(p.sold)}}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div v-if="sortedProducts.length===0" style="text-align:center;padding:60px 0;color:var(--text-muted)">
+      <p style="font-size:60px">📭</p>
+      <p>暂无相关商品</p>
+    </div>
+  </div>`,
+  data(){return{sortBy:'default'};},
+  computed: {
+    filteredProducts(){
+      let list=this.products;
+      const cat=this.$route.query.cat||'';
+      const search=this.$route.query.search||'';
+      if(cat&&cat!=='all'){
+        list=list.filter(p=>p.cat===cat);
+      }
+      if(search){
+        const q=search.toLowerCase();
+        list=list.filter(p=>(p.name||'').toLowerCase().includes(q)||(p.desc||'').toLowerCase().includes(q)||(p.cat||'').includes(q));
+      }
+      return list;
+    },
+    sortedProducts(){
+      const list=[...this.filteredProducts];
+      if(this.sortBy==='price-asc')list.sort((a,b)=>a.price-b.price);
+      else if(this.sortBy==='price-desc')list.sort((a,b)=>b.price-a.price);
+      else if(this.sortBy==='sales')list.sort((a,b)=>b.sold-a.sold);
+      return list;
+    }
+  },
+  methods:{goDetail(id){this.$router.push('/product/'+id);}}
+};
+
+// -- ProductDetailPage --
+const ProductDetailPage = {
+  props: ['cart','products'],
+  emits: ['add-cart'],
+  template: `
+  <div class="main-content">
+    <div class="detail-container" v-if="product">
+      <div class="detail-img-area">
+        <img v-if="product.image" :src="product.image" @error="product.image=''" class="product-photo" alt="">
+        <span v-else v-html="getProductSVG(product.id,200)"></span>
+      </div>
+      <div class="detail-info">
+        <h2>{{product.name}}</h2>
+        <div class="detail-rating">★ {{product.rating}} · 已售{{formatSold(product.sold)}}件 · 好评率98%</div>
+        <div class="detail-price-block">
+          <span class="detail-price-current">¥{{product.price}}</span>
+          <span class="detail-price-original" v-if="product.original>product.price">¥{{product.original}}</span>
+        </div>
+        <p class="detail-desc">{{product.desc}}</p>
+        <div class="detail-tags">
+          <span class="detail-tag">🏷️ 正品保证</span>
+          <span class="detail-tag">🚚 全国包邮</span>
+          <span class="detail-tag">↩️ 7天无理由退换</span>
+          <span class="detail-tag">🛡️ 运费险</span>
+          <span class="detail-tag">✅ 品质认证</span>
+          <span class="detail-tag">📦 极速发货</span>
+        </div>
+        <div class="detail-actions">
+          <button class="detail-btn-cart" @click="addCart">🛒 加入购物车</button>
+          <button class="detail-btn-buy" @click="buyNow">⚡ 立即购买</button>
+        </div>
+      </div>
+    </div>
+    <div v-else style="text-align:center;padding:60px;color:var(--text-muted)">
+      <p style="font-size:60px">🔍</p><p>商品未找到</p>
+    </div>
+  </div>`,
+  computed:{
+    product(){
+      const rid=this.$route.params.id;
+      return this.products.find(p=>String(p.id)===String(rid))||null;
+    }
+  },
+  methods:{
+    addCart(){
+      if(this.product){this.$emit('add-cart',this.product.id);this.$root.showToast('已添加到购物车 ✅');}
+    },
+    buyNow(){
+      if(this.product){
+        this.$emit('add-cart',this.product.id);
+        this.$root.showToast('已添加到购物车 ✅');
+        this.$root.toggleCartPopup();
+      }
+    }
+  }
+};
+
+// ========== Vue Router ==========
+const routes = [
+  {path:'/',name:'home',component:HomePage,props:true},
+  {path:'/login',name:'login',component:LoginPage,props:true},
+  {path:'/register',name:'register',component:RegisterPage,props:true},
+  {path:'/products',name:'products',component:ProductListPage,props:true},
+  {path:'/product/:id',name:'product',component:ProductDetailPage,props:true},
+  {path:'/coupons',name:'coupons',component:CouponPage,props:true},
+  {path:'/orders',name:'orders',component:OrdersPage,props:true},
+];
+const router = VueRouter.createRouter({
+  history: VueRouter.createWebHashHistory(),
+  routes
+});
+
+// ========== Vue App ==========
+const app = Vue.createApp({
+  data(){
+    return {
+      searchQuery:'',
+      cart: JSON.parse(localStorage.getItem('cart')||'[]'),
+      orders: JSON.parse(localStorage.getItem('orders')||'[]'),
+      coupons: JSON.parse(localStorage.getItem('coupons')||'[]'),
+      products: productsData,
+      user: null,
+      cartOpen: false,
+      checkoutOpen: false,
+      checkoutAddr: {name:'',phone:'',address:''},
+      checkoutPayment: 'alipay',
+      toastShow: false,
+      toastMsg: '',
+      toastTimer: null,
+      // AI 客服
+      csOpen: false,
+      csSettingsOpen: false,
+      csMessages: [],
+      csInput: '',
+      csSending: false,
+      csTyping: false,
+      csError: '',
+      csGreeted: false,
+      csSaving: false,
+      csEmojiPresets: ['🐱','🦊','🐰','🐼','🐧','🐨','🐾','😺'],
+      csProfile: {
+        botName: '提丰客服',
+        avatarUrl: '🐾',
+        persona: '',
+        themeColor: '#ff6b35',
+        greeting: '主人好喵~ 我是提丰客服，想找什么商品直接问我。'
+      },
+      csDraft: {botName:'', persona:'', greeting:'', themeColor:'#ff6b35', avatarUrl:'🐾'},
+      // 店主管理
+      adminOpen: false,
+      adminBusy: {},
+      adminAllRunning: false,
+      adminAllDone: 0,
+      adminAllTotal: 35,
+      adminPollTimer: null
+    };
+  },
+  computed: {
+    isAdmin(){return !!(this.user && this.user.role === 'ADMIN');},
+    cssColor(){return this.csProfile.themeColor || '#ff6b35';},
+    cartTotalCount(){return this.cart.reduce((s,c)=>s+c.qty,0);},
+    cartTotalPrice(){
+      return this.cart.reduce((s,c)=>{
+        const p=this.products.find(pp=>pp.id===c.id);
+        return s+(p?p.price:0)*c.qty;
+      },0);
+    },
+    recommendedProducts(){
+      const cartIds=this.cart.map(c=>c.id);
+      return this.products.filter(p=>!cartIds.includes(p.id)).sort(()=>Math.random()-0.5).slice(0,6);
+    }
+  },
+  methods: {
+    toggleTheme(){
+      const html=document.documentElement;
+      const cur=html.getAttribute('data-theme');
+      const next=cur==='dark'?'light':'dark';
+      html.setAttribute('data-theme',next);
+      localStorage.setItem('theme',next);
+    },
+    goHome(){this.$router.push('/');},
+    goChat(){ window.location.href = '/index.html'; },
+    goLogin(){
+      window.location.href = this.user ? '/index.html' : '/login.html';
+    },
+    goTo(path){this.$router.push(path);},
+    handleSearch(){
+      const q=this.searchQuery.toLowerCase().trim();
+      if(!q){this.$router.push('/products');return;}
+      this.$router.push('/products?search='+encodeURIComponent(q));
+    },
+    toggleCartPopup(){this.cartOpen=!this.cartOpen;},
+    addToCart(id){
+      const existing=this.cart.find(c=>c.id===id);
+      if(existing)existing.qty++;
+      else this.cart.push({id,qty:1});
+      this.saveCart();
+    },
+    removeFromCart(id){
+      this.cart=this.cart.filter(c=>c.id!==id);
+      this.saveCart();
+    },
+    changeQty(id,delta){
+      const item=this.cart.find(c=>c.id===id);
+      if(!item)return;
+      item.qty+=delta;
+      if(item.qty<=0){this.removeFromCart(id);return;}
+      this.saveCart();
+    },
+    saveCart(){localStorage.setItem('cart',JSON.stringify(this.cart));},
+    goToProduct(id){this.$router.push('/product/'+id);this.cartOpen=false;},
+    openCheckout(){
+      if(this.cart.length===0)return;
+      this.cartOpen=false;
+      this.checkoutAddr={name:'',phone:'',address:''};
+      this.checkoutPayment='alipay';
+      this.checkoutOpen=true;
+    },
+    submitOrder(){
+      if(!this.checkoutAddr.name.trim()||!this.checkoutAddr.phone.trim()||!this.checkoutAddr.address.trim()){
+        this.showToast('请完善收货地址信息');return;
+      }
+      const order={
+        id:'TX'+Date.now().toString(36).toUpperCase(),
+        items:JSON.parse(JSON.stringify(this.cart)),
+        total:this.cartTotalPrice,
+        status:'shipping',
+        address:{...this.checkoutAddr},
+        payment:this.checkoutPayment,
+        date:new Date().toLocaleString('zh-CN'),
+        tracking:[
+          {time:new Date().toLocaleString('zh-CN'),desc:'订单已提交，等待商家确认'},
+          {time:new Date(Date.now()+1800000).toLocaleString('zh-CN'),desc:'商家已接单，正在备货中'},
+          {time:new Date(Date.now()+7200000).toLocaleString('zh-CN'),desc:'商品已出库，等待揽收'},
+          {time:new Date(Date.now()+14400000).toLocaleString('zh-CN'),desc:'快递已揽件，发往分拣中心'},
+          {time:new Date(Date.now()+86400000).toLocaleString('zh-CN'),desc:'快递到达分拣中心，正在转运中'},
+        ]
+      };
+      this.orders.unshift(order);
+      localStorage.setItem('orders',JSON.stringify(this.orders));
+      this.cart=[];this.saveCart();this.checkoutOpen=false;
+      this.showToast('订单提交成功！🎉');
+    },
+    confirmReceive(orderId){
+      const order=this.orders.find(o=>o.id===orderId);
+      if(order&&order.status==='delivered'){
+        order.status='received';
+        order.tracking.push({time:new Date().toLocaleString('zh-CN'),desc:'买家已确认收货'});
+        localStorage.setItem('orders',JSON.stringify(this.orders));
+        this.showToast('已确认收货 ✅');
+      }
+    },
+    requestReturn(orderId){
+      const order=this.orders.find(o=>o.id===orderId);
+      if(order&&(order.status==='delivered'||order.status==='received')){
+        order.status='returning';
+        order.tracking.push({time:new Date().toLocaleString('zh-CN'),desc:'买家申请退货退款，等待商家审核'});
+        localStorage.setItem('orders',JSON.stringify(this.orders));
+        this.showToast('退货申请已提交，等待审核');
+      }
+    },
+    claimCoupon(couponId){
+      if(this.coupons.includes(couponId)){this.showToast('已领取过该优惠券');return;}
+      this.coupons.push(couponId);
+      localStorage.setItem('coupons',JSON.stringify(this.coupons));
+      this.showToast('领券成功 🎫');
+    },
+    showToast(msg){
+      this.toastMsg=msg;this.toastShow=true;
+      clearTimeout(this.toastTimer);
+      this.toastTimer=setTimeout(()=>this.toastShow=false,2200);
+    },
+    getProductName(id){const p=this.products.find(pp=>pp.id===id);return p?p.name:'';},
+    getProductPrice(id){const p=this.products.find(pp=>pp.id===id);return p?p.price:0;},
+    getProductImage(id){
+      const p=(this.products||[]).find(pp=>String(pp.id)===String(id));
+      return p&&p.image?p.image:'';
+    },
+    onImageError(id){
+      const p=(this.products||[]).find(pp=>String(pp.id)===String(id));
+      if(p)p.image='';
+    },
+    isImgAvatar(url){
+      return !!url && /^(data:|https?:|\/)/.test(url);
+    },
+    setUser(u){this.user=u||null;},
+    async loadMe(){
+      try{
+        const res=await fetch('/api/auth/me');
+        if(res.ok){ this.user=await res.json(); }
+        else { this.user=null; }
+      }catch(e){ this.user=null; }
+    },
+    async loadProducts(){
+      try{
+        const res=await fetch('/api/products');
+        if(!res.ok)throw new Error('HTTP '+res.status);
+        const list=await res.json();
+        if(Array.isArray(list)&&list.length){
+          this.products=list.map(p=>({...p,image:p.image||''}));
+          this.adminAllTotal=this.products.length;
+        }
+      }catch(e){
+        console.warn('商品接口不可用，回退本地数据：',e);
+        this.products=productsData;
+      }
+    },
+    async logout(){
+      try{ await fetch('/api/auth/logout',{method:'POST'}); }catch(e){}
+      location.reload();
+    },
+    // ── AI 客服 ──
+    toggleCs(){
+      this.csOpen=!this.csOpen;
+      if(this.csOpen&&!this.csGreeted){
+        this.csGreeted=true;
+        this.csMessages.push({role:'assistant',content:this.csProfile.greeting||'主人好喵~'});
+        this.scrollCs();
+      }
+      if(this.csOpen)this.scrollCs();
+    },
+    async loadCsProfile(){
+      try{
+        const res=await fetch('/api/cs/profile');
+        if(!res.ok)return;
+        const p=await res.json();
+        if(p)this.csProfile={...this.csProfile,...p,themeColor:p.themeColor||this.csProfile.themeColor};
+      }catch(e){ /* 未登录或接口未就绪，用默认配置 */ }
+    },
+    openCsSettings(){
+      if(!this.user){ this.showToast('先登录才能设置客服喵'); return; }
+      this.csDraft={
+        botName:this.csProfile.botName||'',
+        persona:this.csProfile.persona||'',
+        greeting:this.csProfile.greeting||'',
+        themeColor:this.csProfile.themeColor||'#ff6b35',
+        avatarUrl:this.csProfile.avatarUrl||'🐾'
+      };
+      this.csOpen=false;
+      this.csSettingsOpen=true;
+    },
+    async saveCsProfile(){
+      if(this.csSaving)return;
+      this.csSaving=true;
+      try{
+        const res=await fetch('/api/cs/profile',{
+          method:'PUT',
+          headers:{'Content-Type':'application/json'},
+          body:JSON.stringify(this.csDraft)
+        });
+        if(!res.ok)throw new Error(await apiErrorMessage(res,'保存失败喵'));
+        const p=await res.json();
+        if(p)this.csProfile={...this.csProfile,...p};
+        this.csSettingsOpen=false;
+        this.csOpen=true;
+        this.showToast('客服设置已保存喵');
+      }catch(e){ this.showToast(e.message); }
+      finally{ this.csSaving=false; }
+    },
+    async uploadCsAvatar(e){
+      const file=e.target.files&&e.target.files[0];
+      e.target.value='';
+      if(!file)return;
+      const fd=new FormData();
+      fd.append('avatar',file);
+      try{
+        const res=await fetch('/api/cs/avatar',{method:'POST',body:fd});
+        if(!res.ok)throw new Error(await apiErrorMessage(res,'头像上传失败喵'));
+        const p=await res.json();
+        if(p)this.csProfile={...this.csProfile,...p};
+        this.csDraft.avatarUrl=this.csProfile.avatarUrl||'';
+        this.showToast('头像已更新喵');
+      }catch(err){ this.showToast(err.message); }
+    },
+    onCsEnter(e){
+      if(e && e.isComposing)return;
+      this.sendCs();
+    },
+    async sendCs(){
+      const text=this.csInput.trim();
+      if(!text||this.csSending)return;
+      this.csInput='';this.csError='';
+      this.csMessages.push({role:'user',content:text});
+      this.csMessages.push({role:'assistant',content:'',streaming:true});
+      const msg=this.csMessages[this.csMessages.length-1];
+      this.csSending=true;this.csTyping=true;
+      this.scrollCs();
+      try{
+        const res=await fetch('/api/cs/chat',{
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({message:text})
+        });
+        if(!res.ok)throw new Error(await apiErrorMessage(res,'客服开小差了喵'));
+        const reader=res.body.getReader();
+        const decoder=new TextDecoder('utf-8');
+        let acc='';
+        while(true){
+          const {done,value}=await reader.read();
+          if(done)break;
+          this.csTyping=false;
+          acc+=decoder.decode(value,{stream:true});
+          msg.content=acc;
+          this.scrollCs();
+        }
+        acc+=decoder.decode();
+        msg.content=acc||'喵…提丰没听清，再说一次好吗？';
+      }catch(err){
+        this.csError=err.message;
+        msg.content=msg.content||('😿 '+err.message);
+      }finally{
+        this.csTyping=false;msg.streaming=false;this.csSending=false;this.scrollCs();
+      }
+    },
+    scrollCs(){
+      this.$nextTick(()=>{
+        const el=this.$refs.csMessages;
+        if(el)el.scrollTop=el.scrollHeight;
+      });
+    },
+    // ── 店主管理 ──
+    openAdmin(){ this.adminOpen=true; },
+    async refetchImage(p){
+      if(this.adminBusy[p.id])return;
+      this.adminBusy[p.id]=true;
+      try{
+        const res=await fetch(`/api/admin/products/${p.id}/image/refetch`,{method:'POST'});
+        if(!res.ok)throw new Error(await apiErrorMessage(res,'重抓失败喵'));
+        const data=await res.json();
+        if(data&&data.image)p.image=data.image;
+        this.showToast(data&&data.image?'已换上新图喵':'没搜到合适的图喵');
+      }catch(e){ this.showToast(e.message); }
+      finally{ delete this.adminBusy[p.id]; }
+    },
+    async uploadImage(p,e){
+      const file=e.target.files&&e.target.files[0];
+      e.target.value='';
+      if(!file)return;
+      const fd=new FormData();
+      fd.append('image',file);
+      this.adminBusy[p.id]=true;
+      try{
+        const res=await fetch(`/api/admin/products/${p.id}/image/upload`,{method:'POST',body:fd});
+        if(!res.ok)throw new Error(await apiErrorMessage(res,'上传失败喵'));
+        const data=await res.json();
+        if(data&&data.image)p.image=data.image;
+        this.showToast('商品图已更新喵');
+      }catch(err){ this.showToast(err.message); }
+      finally{ delete this.adminBusy[p.id]; }
+    },
+    async refetchAllImages(){
+      if(this.adminAllRunning)return;
+      this.adminAllRunning=true;
+      this.adminAllDone=0;
+      this.adminAllTotal=this.products.length||35;
+      // 接口一次性返回结果，进度按“每张约 1 秒”估算，完成后用真实数量校正
+      clearInterval(this.adminPollTimer);
+      this.adminPollTimer=setInterval(()=>{
+        if(this.adminAllDone<this.adminAllTotal-1)this.adminAllDone++;
+      },1000);
+      try{
+        const res=await fetch('/api/admin/products/images/refetch-all',{method:'POST'});
+        if(!res.ok)throw new Error(await apiErrorMessage(res,'一键重抓失败喵'));
+        const list=await res.json();
+        if(Array.isArray(list))this.adminAllDone=list.length;
+        await this.loadProducts();
+        const ok=Array.isArray(list)?list.filter(x=>x&&x.ok).length:0;
+        this.showToast(`重抓完成：成功 ${ok}/${Array.isArray(list)?list.length:0} 张`);
+      }catch(e){ this.showToast(e.message); }
+      finally{
+        clearInterval(this.adminPollTimer);
+        this.adminPollTimer=null;
+        this.adminAllRunning=false;
+      }
+    },
+    getProductSVG
+  },
+  mounted(){
+    const t=localStorage.getItem('theme');
+    if(t)document.documentElement.setAttribute('data-theme',t);
+    this.loadMe().then(()=>{ if(this.user)this.loadCsProfile(); });
+    this.loadProducts();
+  }
+});
+
+app.use(router);
+app.use(vant);
+app.config.globalProperties.formatSold = function(n){return n>=10000?(n/10000).toFixed(1)+'万':n;};
+app.config.globalProperties.getProductSVG = getProductSVG;
+// 子组件（订单页）也需要查商品图
+app.config.globalProperties.getProductImage = function(id){
+  const p=(this.products||[]).find(pp=>String(pp.id)===String(id));
+  return p&&p.image?p.image:'';
+};
+app.config.globalProperties.onImageError = function(id){
+  const p=(this.products||[]).find(pp=>String(pp.id)===String(id));
+  if(p)p.image='';
+};
+app.mount('#app');
+</script>
+</body>
+</html>

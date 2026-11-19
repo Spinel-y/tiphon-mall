@@ -1,0 +1,24 @@
+# ── 构建产物 ─────────────────────────────
+target/
+*.class
+
+# ── IDE ──────────────────────────────────
+.idea/
+*.iml
+.DS_Store
+Thumbs.db
+
+# ── 私密配置（绝不要提交） ────────────────
+application-secret.properties
+*.local.properties
+
+# ── 运行时数据 ────────────────────────────
+# 上传/生成的图片、抓取的商品图、H2 演示数据库、日志
+ai-images/
+product-images/
+data/
+logs/
+*.log
+
+# 背景音乐（自行放 mp3 到 music/，避免把有版权的音频传上来）
+music/
