@@ -4,6 +4,10 @@
 
 ## [Unreleased]
 
+（暂无）
+
+## [1.0.0] - 2026-11-20
+
 ### 新增
 
 - **数据库落地**：接入 MySQL（JPA `ddl-auto=update`），`users`、`products`、`cs_profiles` 三张表，
@@ -37,6 +41,7 @@
 - `pom.xml` 整理：修正 `${langchain4j.verion}` 拼写、补充元信息、按功能分组，
   移除未被使用的 `langchain4j-community-dashscope-spring-boot-starter`
 - 冒烟测试改用 H2 内存库，`mvn package` 不再依赖本机 MySQL
+- 项目版本定为 `1.0.0`（`pom.xml` 从 `0.0.1-SNAPSHOT` 改为正式版号）
 
 ### 移除
 
@@ -49,3 +54,6 @@
 - 登录页原先只写 `sessionStorage` 不校验，任何页面都能直接访问；现在统一由 Spring Security 拦截
 - 商品无图时前端显示空白；现在接口返回按需补图地址，首次浏览即触发抓取
 - 管理后台保存 AI Key 会覆盖掉数据库配置（写文件时改为合并已有属性）
+
+[Unreleased]: https://github.com/Spinel-y/tiphon-mall/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/Spinel-y/tiphon-mall/releases/tag/v1.0.0

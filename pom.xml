@@ -11,7 +11,7 @@
 
     <groupId>com.example</groupId>
     <artifactId>tiphon-mall</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.0</version>
     <name>tiphon-mall</name>
     <description>提丰商城：Spring Boot + LangChain4j 的 AI 网店示例</description>
 
