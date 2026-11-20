@@ -175,3 +175,7 @@ java -jar target/tiphon-mall-0.0.1-SNAPSHOT.jar --spring.profiles.active=h2
 
 代码可自由学习、修改、二次分发。商品文案与抓取到的商品图来自公开网络，版权归原作者，
 请勿用于商业用途；如需正式开源协议，可在仓库里补一个 `LICENSE` 文件。
+
+## 更新日志
+
+见 [CHANGELOG.md](CHANGELOG.md)。
