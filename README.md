@@ -4,6 +4,20 @@
 后端 Spring Boot 3.5（Java 17），前端是三个原生 HTML 页面（Vue 3 走 CDN，不用 Node 构建），
 数据默认 MySQL，也可以零配置切到 H2 文件库直接体验。
 
+## 界面预览
+
+<img src="docs/screenshots/shop.png" width="760" alt="商城首页">
+
+商城首页：分类导航、限时秒杀，商品图由服务端按需抓取
+
+<img src="docs/screenshots/chat.png" width="760" alt="提丰智能对话页">
+
+对话页：猫娘人设的 AI 助手，能聊天、放音乐、看相册、玩小游戏
+
+<img src="docs/screenshots/cs-settings.png" width="320" alt="客服形象设置">
+
+客服形象设置：名字、人设、开场白、主题色、头像，按用户保存
+
 ## 功能
 
 - **商城**：商品列表、分类筛选、搜索、详情、购物车（本地）、优惠券页
@@ -136,18 +150,30 @@ java -jar target/tiphon-mall-0.0.1-SNAPSHOT.jar --spring.profiles.active=h2
 登录后商城头部会多一个「管理」入口，可以给商品重抓图片或上传本地图。
 想换密码：改配置重启（已存在的 admin 不会被覆盖），或直接在数据库里把该账号删掉重启一次。
 
-## 注意事项 / 常见坑
+## 常见问题
 
-- **H2 只读报错**：如果进程被强杀（或断电），下次启动可能报
-  `SQL Error: 90097 ... The database is read only`。删掉 `data/` 目录重启即可（演示数据会重新生成）。
-- **图片抓取要联网**，来自 360 图片搜索，质量参差、可能带第三方水印，仅作演示；
-  正式用途请换成自己的图或上传。抓图失败不影响页面，会退回内置 SVG 占位图。
-- **首次浏览某商品会慢 1–2 秒**：那张图是那一刻才去抓的，之后走本地缓存。
-- **music/ 没有随仓库提供**：`music/` 里的 mp3 有版权顾虑，请自己放一首
-  （`music/test-song.mp3` 之类），音乐页才播得出东西。
-- **端口被占**：`mvn spring-boot:run -Dspring-boot.run.arguments=--server.port=8900`
-- **Windows 下 curl 发中文 JSON 会乱码**（GBK），测试接口请用浏览器 / Postman / node 脚本。
-- **CSRF 已关闭**、会话 Cookie 未加 `Secure`，这是演示配置；真要上线请开 HTTPS 并重新评估安全设置。
+先看日志里第一处 `Caused by:`，多半就是原因。
+
+| 现象 | 处理 |
+| --- | --- |
+| 启动后立刻退出，退出码 1 | MySQL 没启动：管理员终端 `net start MySQL80_E`；或用 H2，加 `--spring.profiles.active=h2` |
+| `Port 8899 was already in use` | `netstat -ano \| findstr :8899` 拿 PID，`taskkill /PID <pid> /F`，或换端口 |
+| `Unsupported class file major version` | JDK 必须 17 以上 |
+| H2 `The database is read only` | 删掉 `data/` 目录重启 |
+| `Could not resolve placeholder 'dashscope.api-key'` | `application-secret.properties` 缺这一行：补齐，或删掉该文件改用页面「设置」填 |
+| 改了 HTML 刷新没变化 | 按 **Ctrl + F5** |
+| 客服返回 400「还没配置 AI 的 API Key」 | 点页面左下角「设置」填 DeepSeek 与 DashScope |
+| 商品图一直是占位 SVG | 抓图失败，重试；或管理员登录后单张上传 |
+
+还是不行：把 `Caused by:` 往后 20 行，连同 `java -version`、`sc query MySQL80_E`、
+`netstat -ano | findstr :8899` 的输出一起贴出来。
+
+## 注意事项
+
+- 商品图来自 360 图片搜索，质量参差、可能带第三方水印，仅作演示；正式用途请换成自己的图
+- `music/` 不随仓库提供（版权顾虑），自己放一首 `music/test-song.mp3` 之类，音乐页才有声音
+- CSRF 已关闭、会话 Cookie 未加 `Secure`，这是演示配置；真要上线请开 HTTPS 并重新评估安全设置
+- Windows 下 `curl` 发中文 JSON 会按 GBK 编码，测试接口请用浏览器 / Postman / node 脚本
 
 ## 主要接口
 
@@ -173,8 +199,11 @@ java -jar target/tiphon-mall-0.0.1-SNAPSHOT.jar --spring.profiles.active=h2
 
 ## 许可
 
-代码可自由学习、修改、二次分发。商品文案与抓取到的商品图来自公开网络，版权归原作者，
-请勿用于商业用途；如需正式开源协议，可在仓库里补一个 `LICENSE` 文件。
+本项目基于 [MIT 许可证](LICENSE) 开源，允许不受限制地使用、复制、修改、合并、发布、
+分发、再许可及销售本软件副本，唯一要求是保留原始版权声明与许可声明。软件按「现状」提供，
+不附带任何明示或暗示的担保。
+
+商品文案与商品配图来源于公开网络，版权归原作者所有，仅用于演示，不应用于商业用途。
 
 ## 更新日志
 

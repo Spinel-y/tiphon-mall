@@ -23,6 +23,10 @@
   保存后写回 `application-secret.properties` 并即时重建模型，无需重启
 - **文档与工程化**：`README.md`（从零运行、建库 SQL、避坑清单）、`CHANGELOG.md`、
   `.gitignore`（密钥/产物/图片/音乐/数据库文件）、`application-secret.properties.example` 模板
+- **排错文档**：README 新增「常见问题」——MySQL 未启动导致退出码 1、端口占用、JDK 版本、
+  H2 只读、Key 占位符缺失、浏览器缓存等常见现象与处理
+- **界面预览**：README 顶部加入三张截图（商城首页、对话页、客服设置），存放于 `docs/screenshots/`
+- **开源许可**：补充 `LICENSE`（MIT），README「许可」段改为指向该文件
 
 ### 变更
 
