@@ -61,7 +61,7 @@
 
 ## 快速开始
 
-### 0. 准备
+### 准备
 
 - JDK 17+
 - Maven 3.6+（IDEA 自带的也行：`Settings → Build Tools → Maven`）
@@ -113,7 +113,7 @@ mvn spring-boot:run
 
 表结构由 JPA 自动创建（`ddl-auto=update`），商品和管理员同样自动补齐。
 
-### 3. 配置 AI（可选，但客服和对话页要用）
+### 配置 AI（可选，但客服和对话页要用）
 
 ```bash
 copy application-secret.properties.example application-secret.properties   # Windows
@@ -134,17 +134,17 @@ dashscope.api-key=sk-你的DashScopeKey
 
 没配 Key 也能正常启动、逛商城；只是 AI 客服和对话会提示「还没配置 API Key」。
 
-### 5. 打包成 jar
+### 打包成 jar
 
 ```bash
-mvn package                       # 产物：target/tiphon-mall-0.0.1-SNAPSHOT.jar
-java -jar target/tiphon-mall-0.0.1-SNAPSHOT.jar               # 用 MySQL
-java -jar target/tiphon-mall-0.0.1-SNAPSHOT.jar --spring.profiles.active=h2
+mvn package                       # 产物：target/tiphon-mall-1.0.0.jar
+java -jar target/tiphon-mall-1.0.0.jar               # 用 MySQL
+java -jar target/tiphon-mall-1.0.0.jar --spring.profiles.active=h2
 ```
 
 `mvn package` 里带了一个 H2 内存库的冒烟测试，不依赖本机 MySQL；想跳过加 `-DskipTests`。
 
-### 6. 管理员
+### 管理员
 
 用户名固定 `admin`，密码来自 `tiphon.admin.password`；没配就是启动日志里那个随机密码。
 登录后商城头部会多一个「管理」入口，可以给商品重抓图片或上传本地图。

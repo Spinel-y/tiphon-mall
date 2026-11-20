@@ -42,6 +42,7 @@
   移除未被使用的 `langchain4j-community-dashscope-spring-boot-starter`
 - 冒烟测试改用 H2 内存库，`mvn package` 不再依赖本机 MySQL
 - 项目版本定为 `1.0.0`（`pom.xml` 从 `0.0.1-SNAPSHOT` 改为正式版号）
+- README 打包命令里的 jar 名同步为 `tiphon-mall-1.0.0.jar`，章节编号去掉残留的 `0.`/`3.`/`5.`/`6.`
 
 ### 移除
 
