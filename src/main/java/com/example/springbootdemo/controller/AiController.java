@@ -1,8 +1,12 @@
 package com.example.springbootdemo.controller;
 
 import com.example.springbootdemo.config.AiConfig;
+import com.example.springbootdemo.entity.ChatPersona;
+import com.example.springbootdemo.entity.User;
 import com.example.springbootdemo.service.AiRuntime;
+import com.example.springbootdemo.service.CurrentUser;
 import com.example.springbootdemo.service.ImageStorageService;
+import com.example.springbootdemo.service.PersonaService;
 import dev.langchain4j.data.message.ImageContent;
 import dev.langchain4j.data.message.TextContent;
 import dev.langchain4j.data.message.UserMessage;
@@ -10,6 +14,7 @@ import dev.langchain4j.service.TokenStream;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
@@ -19,7 +24,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Base64;
-import java.util.Date;
 import java.util.Map;
 
 @RestController
@@ -32,8 +36,16 @@ public class AiController {
     @Autowired
     ImageStorageService imageStorageService;
 
+    @Autowired
+    PersonaService personaService;
+
+    @Autowired
+    CurrentUser currentUser;
+
     @GetMapping(value = "memory_stream_chat", produces = "text/stream;charset=utf-8")
-    public Flux<String> memoryStreamChat(@RequestParam(defaultValue = "你是谁") String message, int userId) {
+    public Flux<String> memoryStreamChat(@RequestParam(defaultValue = "你是谁") String message,
+                                         @RequestParam(required = false) Integer userId,
+                                         Authentication auth) {
         AiConfig.Assistant assistant;
         try {
             assistant = aiRuntime.assistant();
@@ -42,7 +54,14 @@ public class AiController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
 
-        TokenStream stream = assistant.stream(userId, message, new Date().toString());
+        // 已登录就用会话里的真实用户，人设也按这个用户取；未登录退回 URL 上的 userId（游客）
+        User loginUser = currentUser.optional(auth);
+        long personaUserId = loginUser != null ? loginUser.getId() : (userId != null ? userId : 0L);
+        int memoryId = (int) personaUserId;
+        ChatPersona persona = personaService.effective(personaUserId);
+        String systemPrompt = personaService.systemPrompt(persona);
+
+        TokenStream stream = assistant.stream(memoryId, systemPrompt, message);
         return Flux.create(sink -> {
             stream.onPartialResponse(s -> sink.next(s))
                     .onCompleteResponse(c -> sink.complete())

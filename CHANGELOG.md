@@ -6,6 +6,25 @@
 
 （暂无）
 
+## [1.0.1] - 2026-11-21
+
+### 新增
+
+- 会话页人设自定义：左下角新增「人设」按钮，可选预设（猫娘 · 提丰 / 靠谱助手 / 编程搭子），
+  并能改名字、怎么称呼你、自称、性格补充、额外要求、开场白；保存后下一句话就生效
+- 人设按用户存进新表 `chat_personas`（JPA 自动建表）；没设置过就用预设默认值，不占一行记录
+- 接口：`GET/PUT /api/chat/persona`、`POST /api/chat/persona/reset`
+- 对话页顶部显示当前人设名字，欢迎气泡改用自定义开场白
+
+### 变更
+
+- `Assistant` 的人设从写死的 `@SystemMessage` 改为每次调用传入 `systemPrompt`，改完不用重启
+- 原猫娘人设重写为预设 `cat`；工具调用规则抽成公共段落，换任何预设都不会丢听歌 / 游戏 / 相册 / 生图标记
+- 三套预设的提示词按「语气 / 结构 / 分寸 / 边界」重写；名字、称呼、自称统一拼在开头，
+  修掉了「自称『我』或『我』」这类重复
+- `/ai/memory_stream_chat` 改为优先用会话里的登录用户，`userId` 参数降级为游客兜底
+- 版本号升到 `1.0.1`
+
 ## [1.0.0] - 2026-11-20
 
 ### 新增
@@ -56,5 +75,6 @@
 - 商品无图时前端显示空白；现在接口返回按需补图地址，首次浏览即触发抓取
 - 管理后台保存 AI Key 会覆盖掉数据库配置（写文件时改为合并已有属性）
 
-[Unreleased]: https://github.com/Spinel-y/tiphon-mall/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/Spinel-y/tiphon-mall/compare/v1.0.1...HEAD
+[1.0.1]: https://github.com/Spinel-y/tiphon-mall/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/Spinel-y/tiphon-mall/releases/tag/v1.0.0

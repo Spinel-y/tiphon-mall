@@ -27,6 +27,8 @@
 - **商品图**：库里没图时按需去 360 图片搜索抓一张并落盘；管理员可单张重抓或上传替换
 - **提丰智能对话页**（`index.html`）：另一个带工具调用的 AI 助手（音乐播放、相册、小游戏、生图），
   左下角「设置」里可直接填 API Key，填完即生效、可随时改
+- **会话人设自定义**：左下角「人设」里选预设（猫娘 / 靠谱助手 / 编程搭子），可改名字、称呼、自称、
+  性格补充、额外要求、开场白；保存后下一句话就生效，按用户保存，随时可恢复默认
 
 ## 技术栈
 
@@ -185,6 +187,8 @@ java -jar target/tiphon-mall-1.0.0.jar --spring.profiles.active=h2
 | GET/PUT | `/api/cs/profile` | 客服形象（名字、人设、主题色、头像、开场白） |
 | POST | `/api/cs/avatar` | 上传客服头像（字段名 `avatar`） |
 | POST | `/api/cs/chat` | 客服流式对话（SSE 文本流） |
+| GET/PUT | `/api/chat/persona` | 会话页人设：读当前设置 + 预设列表，或保存新设置 |
+| POST | `/api/chat/persona/reset` | 会话页人设恢复默认 |
 | POST | `/api/admin/products/{id}/image/refetch`、`/image/upload` | 管理员换图 |
 | POST | `/api/admin/products/images/refetch-all` | 批量重抓 |
 | GET/POST | `/api/settings/keys` | 读取（脱敏）/ 保存 AI Key |
